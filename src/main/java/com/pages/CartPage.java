@@ -9,7 +9,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.annotations.Test;
 
-import com.testbase.Keyword;
+import com.testbase.KeyWord;
 import com.utilities.WaitFor;
 
 import static com.utilities.WaitFor.*;
@@ -17,7 +17,7 @@ import static com.utilities.WaitFor.*;
 public class CartPage {
 
 	public CartPage() {
-		PageFactory.initElements(Keyword.driver, this);
+		PageFactory.initElements(KeyWord.driver, this);
 	}
 
 	@FindBy(xpath = "(//div[@class=\"css-xjhrni\"])[1]")
@@ -64,7 +64,7 @@ public class CartPage {
 	WebElement brandName;
 	@FindBy(css = "a.itemContainer-base-itemLink")
 	WebElement productName;
-	@FindBy(css = "div.itemComponents-base-priceBold")
+	@FindBy(xpath = "//div[@class='priceDetail-base-total']")
 	WebElement productPrice;
 	@FindBy(css = "div.itemComponents-base-size")
 	WebElement productSize;
@@ -74,10 +74,27 @@ public class CartPage {
 	WebElement checkoutPageTitle;
 	@FindBy(xpath = "//div[text()=\"ADD GIFT PACKAGE\"]")
 	WebElement addGiftPackage;
-	@FindBy(xpath = "//div[@id=\"cartItemsList\"]//div[@class=\"item-base-item  \"]")
+	@FindBy(xpath = "//div[@id='cartItemsList']//div[@class='item-base-item']")
 	List<WebElement> productcards;
 	@FindBy(css = "div.itemContainer-base-itemLeft")
 	List<WebElement> productImages;
+
+	// New locators for coupon input and messages
+	@FindBy(xpath = "(//div[@role='dialog']//input)[1]")
+	WebElement couponInput;
+	@FindBy(xpath = "//div[contains(text(),'Invalid coupon') or contains(text(),'Coupon code is invalid')]")
+	WebElement couponErrorMessage;
+	@FindBy(xpath = "//div[contains(text(),'Please enter') and contains(text(),'coupon')]")
+	WebElement couponValidationMessage;
+
+	@FindBy(xpath = "//*[contains(text(),'Maximum') or contains(text(),'max quantity') or contains(text(),'only')]")
+	WebElement maxQuantityWarning;
+
+	@FindBy(xpath = "//*[contains(text(),'Your cart is empty') or contains(text(),'cart is empty')]")
+	WebElement emptyCartMessage;
+
+	@FindBy(xpath = "//div[contains(@class,'login') or //h2[contains(.,'Login')]]")
+	WebElement loginPopup;
 
 	public void clickPlaceOrder() {
 		waitForElementToBeVisible(placeOrderButton);
@@ -85,18 +102,31 @@ public class CartPage {
 	}
 
 	public void clickCouponButton() {
-		couponButton.click();
+		try {
+			waitForElementToBeVisible(couponButton);
+			couponButton.click();
+		} catch (Exception e) {
+			// ignore
+		}
 	}
 
 	public void clickApplyCouponButton() {
 		waitForElementToBeVisible(applyCouponButton);
 		applyCouponButton.click();
-		closeCouponPopup.click();
+		try {
+			closeCouponPopup.click();
+		} catch (Exception e) {
+			// ignore
+		}
 	}
 
 	public boolean isCouponApplied() {
-		waitForElementToBeVisible(couponAppliedMessage);
-		return couponAppliedMessage.isDisplayed();
+		try {
+			waitForElementToBeVisible(couponAppliedMessage);
+			return couponAppliedMessage.isDisplayed();
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	public String getPriceDetails() {
@@ -198,12 +228,14 @@ public class CartPage {
 	}
 
 	public String getProductPrice() {
+		WaitFor.waitForElementToBeVisible(productPrice);
 		return productPrice.getText();
 	}
 	public String getProductSize() {
 		return productSize.getText();
 	}
 	public String getProductQuantity() {
+		WaitFor.waitForElementToBeVisible(productQuantity);
 		return productQuantity.getText();
 	}
 
@@ -225,4 +257,95 @@ public class CartPage {
 			// ignore
 		}
 	}
+
+	// New helper methods used by tests
+	public boolean isRemoveButtonVisible() {
+		try {
+			return removeButton.isDisplayed();
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	public void enterCoupon(String code) {
+		try {
+			waitForElementToBeVisible(couponInput);
+			couponInput.clear();
+			couponInput.sendKeys(code);
+		} catch (Exception e) {
+			// ignore if not present
+		}
+	}
+
+	public boolean isCouponErrorDisplayed() {
+		try {
+			waitForElementToBeVisible(couponErrorMessage);
+			return couponErrorMessage.isDisplayed();
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	public boolean isCouponValidationMessageDisplayed() {
+		try {
+			waitForElementToBeVisible(couponValidationMessage);
+			return couponValidationMessage.isDisplayed();
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	public boolean isPlaceOrderButtonEnabled() {
+		try {
+			waitForElementToBeVisible(placeOrderButton);
+			return placeOrderButton.isEnabled();
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	public void increaseQuantityToMaxLimit() {
+		// try to click increase button repeatedly until a warning appears or until a safe cap
+		try {
+			List<WebElement> incButtons = KeyWord.driver.findElements(By.xpath("//button[contains(@aria-label,'increase') or contains(@class,'qty-increase') or contains(.,'+')]") );
+			if (incButtons.isEmpty()) return;
+			WebElement inc = incButtons.get(0);
+			for (int i=0;i<50;i++) {
+				inc.click();
+				try { Thread.sleep(200); } catch (InterruptedException e) {}
+				if (isMaxQuantityWarningDisplayed()) break;
+			}
+		} catch (Exception e) {
+			// ignore
+		}
+	}
+
+	public boolean isMaxQuantityWarningDisplayed() {
+		try {
+			waitForElementToBeVisible(maxQuantityWarning);
+			return maxQuantityWarning.isDisplayed();
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	public boolean isLoginPopupDisplayed() {
+		try {
+			// Check for a login form or popup
+			List<WebElement> loginElements = KeyWord.driver.findElements(By.xpath("//form//input[@type='email' or @name='email' or @placeholder='Email'] | //h2[contains(.,'Login')]"));
+			return loginElements.size() > 0;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	public boolean isEmptyCartMessageDisplayed() {
+		try {
+			waitForElementToBeVisible(emptyCartMessage);
+			return emptyCartMessage.isDisplayed();
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
 }

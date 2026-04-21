@@ -1,10 +1,16 @@
 package com.testbase;
 
+import java.awt.Window;
+import java.net.URL;
 import java.util.Set;
+
+import javax.swing.JWindow;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.InvalidArgumentException;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -16,16 +22,20 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import com.utilities.ConfigReader;
+import com.utilities.WaitFor;
 //keyword class is used to Store reusable Selenium actions.
 
-public class Keyword {
+public class KeyWord {
+
 	public static RemoteWebDriver driver;
+
 	// Open Browser
 	public static void openBrowser(String browsername) {
 
 		if (browsername.equalsIgnoreCase("chrome")) {
 			ChromeOptions option = new ChromeOptions();
 			option.addArguments("--incognito");
+
 			driver = new ChromeDriver(option);
 		} else if (browsername.equalsIgnoreCase("Firefox")) {
 			FirefoxOptions option = new FirefoxOptions();
@@ -43,6 +53,7 @@ public class Keyword {
 	}
 
 	// Get Url
+
 	public static void getUrl(String url) {
 		driver.get(url);
 
@@ -107,31 +118,31 @@ public class Keyword {
 		driver.quit();
 
 	}
-	
+
 	public static void windowHandle() {
 		String currentWindow = driver.getWindowHandle();
-		Set<String> set= driver.getWindowHandles();
-		if(set.size()>1) {
-			for(String window : set) {
-				if(!window.equals(currentWindow)) {
+		Set<String> set = driver.getWindowHandles();
+		if (set.size() > 1) {
+			for (String window : set) {
+				if (!window.equals(currentWindow)) {
 					driver.switchTo().window(window);
 				}
 			}
 		}
 	}
 
-	public static void clickOn(By Locator) {
-		driver.findElement(Locator).click();
+	public static void clickOn(WebElement option) {
+	    option.click();
+	}
+	public static void clickOn(By option) {
+		driver.findElement(option).click();
 
 	}
-	
 	public static WebElement getElement(By locator) {
 		return driver.findElement(locator);
 	}
+
 	
-	public static boolean isDisplayed(By locator) {
-		return getElement(locator).isDisplayed();
-	}
 
 	public static void enterText(By searchresult, String text) {
 		driver.findElement(searchresult).sendKeys(text);
@@ -153,12 +164,12 @@ public class Keyword {
 	public static void scrollToElement(By Locator) {
 		// TODO Auto-generated method stub
 
-	    WebElement element = driver.findElement(Locator);
+		WebElement element = driver.findElement(Locator);
 
-	    Actions action = new Actions(driver);
+		Actions action = new Actions(driver);
 
-	    action.moveToElement(element).perform();
-		
+		action.moveToElement(element).perform();
+
 	}
 
 	public static String getCurrentUrl() {
@@ -168,11 +179,35 @@ public class Keyword {
 
 	public static void scrollToElement(WebElement size) {
 		// TODO Auto-generated method stub
-		
 
-	    Actions action = new Actions(driver);
+		Actions action = new Actions(driver);
 
-	    action.moveToElement(size).perform();
-		
+		action.moveToElement(size).perform();
+
 	}
+
+	public static void navigate() {
+		// TODO Auto-generated method stub
+		driver.navigate().refresh();
+	}
+
+	public static void scrollToElement(int i) {
+		// TODO Auto-generated method stub
+		JavascriptExecutor js=(JavascriptExecutor)driver;
+		js.executeScript("window.scrollBy(0,500)");
+	}
+
+	
+	public static boolean isDisplayed(WebElement element) {
+		WaitFor.waitForElementToBeVisible(element);
+		return element.isDisplayed();
+	}
+
+	public static boolean isDisplayed(By locator) {
+		WaitFor.waitForElementToBeVisible(locator);
+		 return KeyWord.driver.findElement(locator).isDisplayed();
+	}
+
+
+	
 }

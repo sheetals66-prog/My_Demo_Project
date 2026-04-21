@@ -1,26 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testng-results ignored="17" total="18" passed="0" failed="1" skipped="0">
+<testng-results ignored="0" total="1" passed="0" failed="1" skipped="0">
   <reporter-output>
   </reporter-output>
-  <suite started-at="2026-04-17T00:58:52 IST" name="Default suite" finished-at="2026-04-17T00:59:06 IST" duration-ms="14030">
+  <suite started-at="2026-04-21T11:54:32 IST" name="Default suite" finished-at="2026-04-21T11:55:16 IST" duration-ms="44594">
     <groups>
     </groups>
-    <test started-at="2026-04-17T00:58:52 IST" name="Default test" finished-at="2026-04-17T00:59:06 IST" duration-ms="14030">
-      <class name="com.Tests.CartPageTest">
-        <test-method is-config="true" signature="setup()[pri:0, instance:com.Tests.CartPageTest@7a675056]" started-at="2026-04-17T00:58:52 IST" name="setup" finished-at="2026-04-17T00:59:00 IST" duration-ms="7819" status="PASS">
+    <test started-at="2026-04-21T11:54:32 IST" name="Default test" finished-at="2026-04-21T11:55:16 IST" duration-ms="44594">
+      <class name="com.Tests.PlaceOrderTest">
+        <test-method is-config="true" signature="setup()[pri:0, instance:com.Tests.PlaceOrderTest@352ff4da]" started-at="2026-04-21T11:54:32 IST" name="setup" finished-at="2026-04-21T11:54:34 IST" duration-ms="2628" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setup -->
-        <test-method signature="verifyRemoveProduct()[pri:0, instance:com.Tests.CartPageTest@7a675056]" started-at="2026-04-17T00:59:00 IST" name="verifyRemoveProduct" finished-at="2026-04-17T00:59:06 IST" duration-ms="6105" status="FAIL">
-          <exception class="java.lang.RuntimeException">
+        <test-method is-config="true" signature="beforeEachTest()[pri:0, instance:com.Tests.PlaceOrderTest@352ff4da]" started-at="2026-04-21T11:54:34 IST" name="beforeEachTest" finished-at="2026-04-21T11:54:36 IST" duration-ms="1583" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- beforeEachTest -->
+        <test-method signature="userAbleToPlaceOrderWithoutLogin()[pri:0, instance:com.Tests.PlaceOrderTest@352ff4da]" started-at="2026-04-21T11:54:36 IST" name="userAbleToPlaceOrderWithoutLogin" finished-at="2026-04-21T11:55:16 IST" duration-ms="39449" status="FAIL">
+          <exception class="org.openqa.selenium.TimeoutException">
             <message>
-              <![CDATA[Size not getting selected ❌]]>
+              <![CDATA[Expected condition failed: waiting for visibility of element found by By.xpath: //input[@placeholder='Search for Color']
+(tried for 30 seconds with 500 milliseconds interval)
+Build info: version: '4.41.0', revision: '9fc754f'
+System info: os.name: 'Windows 11', os.arch: 'amd64', os.version: '10.0', java.version: '23.0.2'
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities {acceptInsecureCerts: false, browserName: chrome, browserVersion: 147.0.7727.57, chrome: {chromedriverVersion: 147.0.7727.57 (b4f28b5637d0..., userDataDir: C:\Users\Rahul\AppData\Loca...}, fedcm:accounts: true, goog:chromeOptions: {debuggerAddress: localhost:57548}, goog:processID: 17744, networkConnectionEnabled: false, pageLoadStrategy: normal, platformName: windows, proxy: Proxy(), se:cdp: ws://localhost:57548/devtoo..., se:cdpVersion: 147.0.7727.57, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, webauthn:extension:credBlob: true, webauthn:extension:largeBlob: true, webauthn:extension:minPinLength: true, webauthn:extension:prf: true, webauthn:virtualAuthenticators: true}
+Session ID: 66e99da37abae5c622433fa8719eb567]]>
             </message>
             <full-stacktrace>
-              <![CDATA[java.lang.RuntimeException: Size not getting selected ❌
-at com.pages.ProductDetailPage.selectSize(ProductDetailPage.java:208)
-at com.Tests.CartPageTest.navigateToCartPage(CartPageTest.java:32)
-at com.Tests.CartPageTest.verifyRemoveProduct(CartPageTest.java:78)
+              <![CDATA[org.openqa.selenium.TimeoutException: Expected condition failed: waiting for visibility of element found by By.xpath: //input[@placeholder='Search for Color']
+(tried for 30 seconds with 500 milliseconds interval)
+Build info: version: '4.41.0', revision: '9fc754f'
+System info: os.name: 'Windows 11', os.arch: 'amd64', os.version: '10.0', java.version: '23.0.2'
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities {acceptInsecureCerts: false, browserName: chrome, browserVersion: 147.0.7727.57, chrome: {chromedriverVersion: 147.0.7727.57 (b4f28b5637d0..., userDataDir: C:\Users\Rahul\AppData\Loca...}, fedcm:accounts: true, goog:chromeOptions: {debuggerAddress: localhost:57548}, goog:processID: 17744, networkConnectionEnabled: false, pageLoadStrategy: normal, platformName: windows, proxy: Proxy(), se:cdp: ws://localhost:57548/devtoo..., se:cdpVersion: 147.0.7727.57, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, webauthn:extension:credBlob: true, webauthn:extension:largeBlob: true, webauthn:extension:minPinLength: true, webauthn:extension:prf: true, webauthn:virtualAuthenticators: true}
+Session ID: 66e99da37abae5c622433fa8719eb567
+at org.openqa.selenium.support.ui.WebDriverWait.timeoutException(WebDriverWait.java:85)
+at org.openqa.selenium.support.ui.FluentWait.until(FluentWait.java:233)
+at com.utilities.WaitFor.waitForElementToBeVisible(WaitFor.java:46)
+at com.pages.ProductListingPage.searchColor(ProductListingPage.java:283)
+at com.Tests.PlaceOrderTest.userAbleToPlaceOrderWithoutLogin(PlaceOrderTest.java:28)
 at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 at org.testng.internal.invokers.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:141)
@@ -49,11 +67,11 @@ at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:293)
 at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:91)
 ]]>
             </full-stacktrace>
-          </exception> <!-- java.lang.RuntimeException -->
+          </exception> <!-- org.openqa.selenium.TimeoutException -->
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- verifyRemoveProduct -->
-      </class> <!-- com.Tests.CartPageTest -->
+        </test-method> <!-- userAbleToPlaceOrderWithoutLogin -->
+      </class> <!-- com.Tests.PlaceOrderTest -->
     </test> <!-- Default test -->
   </suite> <!-- Default suite -->
 </testng-results>
