@@ -25,7 +25,7 @@
       <span class="top-banner-title-font">Test results</span>
       <button id="button" class="button">Switch Retro Theme</button> <!-- button -->
       <br/>
-      <span class="top-banner-font-1">1 suite, 1 failed test</span>
+      <span class="top-banner-font-1">1 suite</span>
     </div> <!-- top-banner-root -->
     <div class="navigator-root">
       <div class="navigator-suite-header">
@@ -39,7 +39,7 @@
         <div class="rounded-window">
           <div class="suite-header light-rounded-window-top">
             <a href="#" panel-name="suite-Default_suite" class="navigator-link">
-              <span class="suite-name border-failed">Default suite</span>
+              <span class="suite-name border-skipped">Default suite</span>
             </a> <!-- navigator-link -->
           </div> <!-- suite-header light-rounded-window-top -->
           <div class="navigator-suite-content">
@@ -50,7 +50,7 @@
               <ul>
                 <li>
                   <a href="#" panel-name="test-xml-Default_suite" class="navigator-link ">
-                    <span>C:\Users\Rahul\AppData\Local\Temp\testng-eclipse-371172902\testng-customsuite.xml</span>
+                    <span>C:\Users\Rahul\AppData\Local\Temp\testng-eclipse--1442312730\testng-customsuite.xml</span>
                   </a> <!-- navigator-link  -->
                 </li>
                 <li>
@@ -92,21 +92,21 @@
               <div class="suite-section-content">
                 <ul>
                   <li>
-                    <span class="method-stats">1 method, 1 failed,   </span>
+                    <span class="method-stats">1 method,  1 skipped,  </span>
                   </li>
                   <li>
-                    <span class="method-list-title failed">Failed methods</span>
-                    <span class="show-or-hide-methods failed">
-                      <a href="#" panel-name="suite-Default_suite" class="hide-methods failed suite-Default_suite"> (hide)</a> <!-- hide-methods failed suite-Default_suite -->
-                      <a href="#" panel-name="suite-Default_suite" class="show-methods failed suite-Default_suite"> (show)</a> <!-- show-methods failed suite-Default_suite -->
+                    <span class="method-list-title skipped">Skipped methods</span>
+                    <span class="show-or-hide-methods skipped">
+                      <a href="#" panel-name="suite-Default_suite" class="hide-methods skipped suite-Default_suite"> (hide)</a> <!-- hide-methods skipped suite-Default_suite -->
+                      <a href="#" panel-name="suite-Default_suite" class="show-methods skipped suite-Default_suite"> (show)</a> <!-- show-methods skipped suite-Default_suite -->
                     </span>
-                    <div class="method-list-content failed suite-Default_suite">
+                    <div class="method-list-content skipped suite-Default_suite">
                       <span>
-                        <img src="failed.png" width="3%"/>
-                        <a href="#" panel-name="suite-Default_suite" title="com.Tests.PlaceOrderTest" class="method navigator-link" hash-for-method="userAbleToPlaceOrderWithoutLogin">userAbleToPlaceOrderWithoutLogin</a> <!-- method navigator-link -->
+                        <img src="skipped.png" width="3%"/>
+                        <a href="#" panel-name="suite-Default_suite" title="com.Tests.ProductListingPageTest" class="method navigator-link" hash-for-method="toVerifyProductCountIsDisplayedAfterApplyingFilter">toVerifyProductCountIsDisplayedAfterApplyingFilter</a> <!-- method navigator-link -->
                       </span>
                       <br/>
-                    </div> <!-- method-list-content failed suite-Default_suite -->
+                    </div> <!-- method-list-content skipped suite-Default_suite -->
                   </li>
                 </ul>
               </div> <!-- suite-section-content -->
@@ -118,40 +118,36 @@
     <div class="wrapper">
       <div class="main-panel-root">
         <div panel-name="suite-Default_suite" class="panel Default_suite">
-          <div class="suite-Default_suite-class-failed">
+          <div class="suite-Default_suite-class-skipped">
             <div class="main-panel-header rounded-window-top">
-              <img src="failed.png"/>
-              <span class="class-name">com.Tests.PlaceOrderTest</span>
+              <img src="skipped.png"/>
+              <span class="class-name">com.Tests.ProductListingPageTest</span>
             </div> <!-- main-panel-header rounded-window-top -->
             <div class="main-panel-content rounded-window-bottom">
               <div class="method">
                 <div class="method-content">
-                  <a name="userAbleToPlaceOrderWithoutLogin">
-                  </a> <!-- userAbleToPlaceOrderWithoutLogin -->
-                  <span class="method-name">userAbleToPlaceOrderWithoutLogin</span>
-                  <div class="stack-trace">org.openqa.selenium.TimeoutException: Expected condition failed: waiting for visibility of element found by By.xpath: //input[@placeholder=&apos;Search for Color&apos;]
-(tried for 30 seconds with 500 milliseconds interval)
-Build info: version: &apos;4.41.0&apos;, revision: &apos;9fc754f&apos;
-System info: os.name: &apos;Windows 11&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;10.0&apos;, java.version: &apos;23.0.2&apos;
-Driver info: org.openqa.selenium.chrome.ChromeDriver
-Capabilities {acceptInsecureCerts: false, browserName: chrome, browserVersion: 147.0.7727.57, chrome: {chromedriverVersion: 147.0.7727.57 (b4f28b5637d0..., userDataDir: C:\Users\Rahul\AppData\Loca...}, fedcm:accounts: true, goog:chromeOptions: {debuggerAddress: localhost:57548}, goog:processID: 17744, networkConnectionEnabled: false, pageLoadStrategy: normal, platformName: windows, proxy: Proxy(), se:cdp: ws://localhost:57548/devtoo..., se:cdpVersion: 147.0.7727.57, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, webauthn:extension:credBlob: true, webauthn:extension:largeBlob: true, webauthn:extension:minPinLength: true, webauthn:extension:prf: true, webauthn:virtualAuthenticators: true}
-Session ID: 66e99da37abae5c622433fa8719eb567
-	at org.openqa.selenium.support.ui.WebDriverWait.timeoutException(WebDriverWait.java:85)
-	at org.openqa.selenium.support.ui.FluentWait.until(FluentWait.java:233)
-	at com.utilities.WaitFor.waitForElementToBeVisible(WaitFor.java:46)
-	at com.pages.ProductListingPage.searchColor(ProductListingPage.java:283)
-	at com.Tests.PlaceOrderTest.userAbleToPlaceOrderWithoutLogin(PlaceOrderTest.java:28)
+                  <a name="toVerifyProductCountIsDisplayedAfterApplyingFilter">
+                  </a> <!-- toVerifyProductCountIsDisplayedAfterApplyingFilter -->
+                  <span class="method-name">toVerifyProductCountIsDisplayedAfterApplyingFilter</span>
+                  <div class="stack-trace">java.lang.RuntimeException: Key &apos;base.url&apos; not found in config.properties
+	at com.utilities.ConfigReader.get(ConfigReader.java:40)
+	at com.testbase.KeyWord.openUrl(KeyWord.java:60)
+	at com.testbase.Testbase.setUp(Testbase.java:19)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.testng.internal.invokers.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:141)
-	at org.testng.internal.invokers.TestInvoker.invokeMethod(TestInvoker.java:687)
+	at org.testng.internal.invokers.MethodInvocationHelper.invokeMethodConsideringTimeout(MethodInvocationHelper.java:71)
+	at org.testng.internal.invokers.ConfigInvoker.invokeConfigurationMethod(ConfigInvoker.java:400)
+	at org.testng.internal.invokers.ConfigInvoker.invokeConfigurations(ConfigInvoker.java:333)
+	at org.testng.internal.invokers.TestInvoker.runConfigMethods(TestInvoker.java:836)
+	at org.testng.internal.invokers.TestInvoker.invokeMethod(TestInvoker.java:601)
 	at org.testng.internal.invokers.TestInvoker.invokeTestMethod(TestInvoker.java:230)
 	at org.testng.internal.invokers.MethodRunner.runInSequence(MethodRunner.java:63)
 	at org.testng.internal.invokers.TestInvoker$MethodInvocationAgent.invoke(TestInvoker.java:995)
 	at org.testng.internal.invokers.TestInvoker.invokeTestMethods(TestInvoker.java:203)
 	at org.testng.internal.invokers.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:154)
 	at org.testng.internal.invokers.TestMethodWorker.run(TestMethodWorker.java:134)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 	at org.testng.TestRunner.privateRun(TestRunner.java:741)
 	at org.testng.TestRunner.run(TestRunner.java:616)
 	at org.testng.SuiteRunner.runTest(SuiteRunner.java:421)
@@ -172,11 +168,11 @@ Session ID: 66e99da37abae5c622433fa8719eb567
                 </div> <!-- method-content -->
               </div> <!-- method -->
             </div> <!-- main-panel-content rounded-window-bottom -->
-          </div> <!-- suite-Default_suite-class-failed -->
+          </div> <!-- suite-Default_suite-class-skipped -->
         </div> <!-- panel Default_suite -->
         <div panel-name="test-xml-Default_suite" class="panel">
           <div class="main-panel-header rounded-window-top">
-            <span class="header-content">C:\Users\Rahul\AppData\Local\Temp\testng-eclipse-371172902\testng-customsuite.xml</span>
+            <span class="header-content">C:\Users\Rahul\AppData\Local\Temp\testng-eclipse--1442312730\testng-customsuite.xml</span>
           </div> <!-- main-panel-header rounded-window-top -->
           <div class="main-panel-content rounded-window-bottom">
             <pre>
@@ -185,11 +181,11 @@ Session ID: 66e99da37abae5c622433fa8719eb567
 &lt;suite name=&quot;Default suite&quot; guice-stage=&quot;DEVELOPMENT&quot;&gt;
   &lt;test thread-count=&quot;5&quot; name=&quot;Default test&quot; verbose=&quot;2&quot;&gt;
     &lt;classes&gt;
-      &lt;class name=&quot;com.Tests.PlaceOrderTest&quot;&gt;
+      &lt;class name=&quot;com.Tests.ProductListingPageTest&quot;&gt;
         &lt;methods&gt;
-          &lt;include name=&quot;userAbleToPlaceOrderWithoutLogin&quot;/&gt;
+          &lt;include name=&quot;toVerifyProductCountIsDisplayedAfterApplyingFilter&quot;/&gt;
         &lt;/methods&gt;
-      &lt;/class&gt; &lt;!-- com.Tests.PlaceOrderTest --&gt;
+      &lt;/class&gt; &lt;!-- com.Tests.ProductListingPageTest --&gt;
     &lt;/classes&gt;
   &lt;/test&gt; &lt;!-- Default test --&gt;
 &lt;/suite&gt; &lt;!-- Default suite --&gt;
@@ -231,14 +227,14 @@ data.addColumn('string', 'Class');
 data.addColumn('number', 'Time (ms)');
 data.addRows(1);
 data.setCell(0, 0, 0)
-data.setCell(0, 1, 'userAbleToPlaceOrderWithoutLogin')
-data.setCell(0, 2, 'com.Tests.PlaceOrderTest')
-data.setCell(0, 3, 39449);
+data.setCell(0, 1, 'toVerifyProductCountIsDisplayedAfterApplyingFilter')
+data.setCell(0, 2, 'com.Tests.ProductListingPageTest')
+data.setCell(0, 3, 0);
 window.suiteTableData['Default_suite']= { tableData: data, tableDiv: 'times-div-Default_suite'}
 return data;
 }
               </script>
-              <span class="suite-total-time">Total running time: 39 seconds</span>
+              <span class="suite-total-time">Total running time: 0 ms</span>
               <div id="times-div-Default_suite">
               </div> <!-- times-div-Default_suite -->
             </div> <!-- times-div -->
@@ -253,9 +249,74 @@ return data;
         </div> <!-- panel -->
         <div panel-name="ignored-methods-Default_suite" class="panel">
           <div class="main-panel-header rounded-window-top">
-            <span class="header-content">0 ignored methods</span>
+            <span class="header-content">30 ignored methods</span>
           </div> <!-- main-panel-header rounded-window-top -->
           <div class="main-panel-content rounded-window-bottom">
+            <div class="ignored-class-div">
+              <span class="ignored-class-name">com.Tests.ProductListingPageTest</span>
+              <div class="ignored-methods-div">
+                <span class="ignored-method-name">toVerifyGirlsFilterIsSelected</span>
+                <br/>
+                <span class="ignored-method-name">toVerifyBrandFilterIsSelected</span>
+                <br/>
+                <span class="ignored-method-name">toVerifyBoysFilterIsSelected</span>
+                <br/>
+                <span class="ignored-method-name">toverifyNoresultsDisplayForInvalidColor</span>
+                <br/>
+                <span class="ignored-method-name">verifyClearFilterWithoutApplying</span>
+                <br/>
+                <span class="ignored-method-name">toVerifyProductIsSelected</span>
+                <br/>
+                <span class="ignored-method-name">toVerifyProductsAreDisplayed</span>
+                <br/>
+                <span class="ignored-method-name">toVerifyCategoriesFilterIsSelected</span>
+                <br/>
+                <span class="ignored-method-name">verifyNoResultsForInvalidSearchWithDiscount</span>
+                <br/>
+                <span class="ignored-method-name">toVerifyApplyBrandFiltersIsWorking</span>
+                <br/>
+                <span class="ignored-method-name">toVerifyDiscountFilterIsSelected</span>
+                <br/>
+                <span class="ignored-method-name">verifyNoresultsForInvalidFilter</span>
+                <br/>
+                <span class="ignored-method-name">toVerifyApplyColorFiltersIsWorking</span>
+                <br/>
+                <span class="ignored-method-name">toVerifyDiscountFilterOnPlpPageForTshirts</span>
+                <br/>
+                <span class="ignored-method-name">toVerifyPriceFilterIsSelected</span>
+                <br/>
+                <span class="ignored-method-name">toVerifySizeFilterIsSelected</span>
+                <br/>
+                <span class="ignored-method-name">verifyNoresultsDisplayForInvalidBrand</span>
+                <br/>
+                <span class="ignored-method-name">toVerifyApplyFiltersIsWorking</span>
+                <br/>
+                <span class="ignored-method-name">verifyNoResultsForMultipleInvalidFilters</span>
+                <br/>
+                <span class="ignored-method-name">verifyNoResultsForInvalidSearchWithValidBrand</span>
+                <br/>
+                <span class="ignored-method-name">toVerifyClearAllFilters</span>
+                <br/>
+                <span class="ignored-method-name">toVerifyProductListingPageIsLoaded</span>
+                <br/>
+                <span class="ignored-method-name">toVerifycolorFilterIsSelected</span>
+                <br/>
+                <span class="ignored-method-name">verifySortByFilterOnPlpPageForTShirts</span>
+                <br/>
+                <span class="ignored-method-name">verifySortWhenNoProducts</span>
+                <br/>
+                <span class="ignored-method-name">verify_products_are_displayed_when_search_and_filters_applied</span>
+                <br/>
+                <span class="ignored-method-name">toVerifyAgeFilerIsSelected</span>
+                <br/>
+                <span class="ignored-method-name">verifyColorWithoutOpeningFilter</span>
+                <br/>
+                <span class="ignored-method-name">verifyNoResultsForInvalidDiscount</span>
+                <br/>
+                <span class="ignored-method-name">toVerifyProductCountIsDisplayed</span>
+                <br/>
+              </div> <!-- ignored-methods-div -->
+            </div> <!-- ignored-class-div -->
           </div> <!-- main-panel-content rounded-window-bottom -->
         </div> <!-- panel -->
         <div panel-name="chronological-Default_suite" class="panel">
@@ -264,21 +325,21 @@ return data;
           </div> <!-- main-panel-header rounded-window-top -->
           <div class="main-panel-content rounded-window-bottom">
             <div class="chronological-class">
-              <div class="chronological-class-name">com.Tests.PlaceOrderTest</div> <!-- chronological-class-name -->
-              <div class="configuration-class before">
-                <span class="method-name">setup</span>
-                <span class="method-start">0 ms</span>
-              </div> <!-- configuration-class before -->
+              <div class="chronological-class-name">com.Tests.ProductListingPageTest</div> <!-- chronological-class-name -->
               <div class="configuration-method before">
-                <span class="method-name">beforeEachTest</span>
-                <span class="method-start">2696 ms</span>
-              </div> <!-- configuration-method before -->
-              <div class="test-method">
                 <img src="failed.png">
                 </img>
-                <span class="method-name">userAbleToPlaceOrderWithoutLogin</span>
-                <span class="method-start">4785 ms</span>
+                <span class="method-name">setUp</span>
+                <span class="method-start">0 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">toVerifyProductCountIsDisplayedAfterApplyingFilter</span>
+                <span class="method-start">3662 ms</span>
               </div> <!-- test-method -->
+              <div class="configuration-method after">
+                <span class="method-name">tearDown</span>
+                <span class="method-start">3723 ms</span>
+              </div> <!-- configuration-method after -->
           </div> <!-- main-panel-content rounded-window-bottom -->
         </div> <!-- panel -->
       </div> <!-- main-panel-root -->

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -19,7 +20,7 @@ public class WaitFor {
 
 	public static WebDriverWait getWait() {
 	    WebDriverWait wait =
-	        new WebDriverWait(KeyWord.driver, Duration.ofSeconds(30));
+	        new WebDriverWait(KeyWord.driver, Duration.ofSeconds(60));
 
 	    wait.pollingEvery(Duration.ofMillis(500));
 	    wait.ignoring(NoSuchElementException.class);
@@ -37,69 +38,53 @@ public class WaitFor {
 		// Private constructor to prevent instantiation
 	}
 
-    public static void waitForElements(List<WebElement> elements) {
-        getWait().until(ExpectedConditions.visibilityOfAllElements(elements));
-    }
+	public static void visibilityOfelement(By locator) {
+		getWait().until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfAllElementsLocatedBy(locator)));
 
-   
-    public static void waitForElementToBeVisible(By locator) {
-        getWait().until(ExpectedConditions.visibilityOfElementLocated(locator));
-    }
-
-   
-    public static void waitForElementToBeClickable(By element) {
-        getWait().until(ExpectedConditions.elementToBeClickable(element));
-    }
-
-    public static void waitForElementToBeClickable(WebElement element) {
-        getWait().until(ExpectedConditions.elementToBeClickable(element));
-    }
-
-   
-    public static void waitForPresence(By locator) {
-        getWait().until(ExpectedConditions.presenceOfElementLocated(locator));
-    }
-
-    public static void waitForPageReload(WebElement oldElement, By newLocator) {
-        if (oldElement != null) {
-            getWait().until(ExpectedConditions.stalenessOf(oldElement)); // old container gone
-        }
-        getWait().until(ExpectedConditions.visibilityOfElementLocated(newLocator)); // new container visible
-    }
-
-    public static boolean waitForTitle(String title) {
-        return getWait().until(ExpectedConditions.titleContains(title));
-    }
-
- 
-    public static void waitForUrl(String url) {
-        getWait().until(ExpectedConditions.urlContains(url));
-    }
-
-    public static void waitForElementToBeClickable(List<WebElement> productcards) {
-     
-        getWait().until(ExpectedConditions.visibilityOfAllElements(productcards));
-    }
-
-    public static void waitForElementToBeVisible(WebElement productTitle) {
-      
-        getWait().until(ExpectedConditions.visibilityOf(productTitle));
-    }
-
-	
-
-	public static void until(ExpectedCondition<Boolean> attributeContains) {
-		
-		getWait().until(attributeContains);
+	}
+	public static void elementToBeClickaBle(By locator) {
+		getWait().until(ExpectedConditions.refreshed(
+	            ExpectedConditions.elementToBeClickable(locator)));
 	}
 
-	public static void waitForElementToBeLocated(By brand_search) {
-		// TODO Auto-generated method stub
-		getWait().until(ExpectedConditions.visibilityOfElementLocated(brand_search));
-		
+	public static WebElement visibilityOfelement(WebElement element) {
+	    return getWait().until(ExpectedConditions.refreshed(
+	            ExpectedConditions.visibilityOf(element)));
 	}
 
-	
-	
-	
+	public static WebElement elementToBeClickaBle(WebElement element) {
+	    return getWait().until(ExpectedConditions.refreshed(
+	            ExpectedConditions.elementToBeClickable(element)));
+	}
+
+	public static List<WebElement> visibilityOfAll(List<WebElement> elements) {
+
+		return getWait().until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfAllElements(elements)));
+	}
+
+	public static List<WebElement> visibilityOfAll(By elements) {
+
+		return getWait().until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfAllElementsLocatedBy(elements)));
+	}
+
+	public static void untilElementGotStale(WebElement webElement) {
+
+		getWait().until(ExpectedConditions.stalenessOf(webElement));
+
+	}
+
+	public static void untilElementGotStale(By locator) {
+		getWait().until(ExpectedConditions.stalenessOf(KeyWord.driver.findElement(locator)));
+	}
+
+	public static void pageLoaded() {
+	    WebDriverWait wait = getWait();
+
+	    wait.until(webDriver ->((JavascriptExecutor) KeyWord.driver)
+	            .executeScript("return document.readyState")
+	            .toString()
+	            .equals("complete")
+	    );
+	}
 }
+

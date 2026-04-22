@@ -6,12 +6,29 @@
   </listeners>
   <test thread-count="1" name="Test(failed)">
     <classes>
-      <class name="com.Tests.EndToEndTestCase">
+      <class name="com.Tests.CartPageTest">
         <methods>
-          <include name="toVerifySearchProduct" invocation-numbers="1 2 3"/>
+          <include name="verifyCouponApplied"/>
+          <include name="verifyProductPresent"/>
+          <include name="verifyEmptyCartState"/>
+          <include name="beforeEachTest"/>
+          <include name="verifyMaxQuantityLimit"/>
+          <include name="verifyPlaceOrderWithoutLogin"/>
+          <include name="verifyMoveToWishlistRemovesFromCart"/>
+          <include name="verifyProductQuantity"/>
+          <include name="verifyCancelToWhishlist"/>
+          <include name="verifyInvalidCouponCode"/>
           <include name="setup"/>
+          <include name="verifyProductName"/>
+          <include name="verifyProductPrice"/>
+          <include name="verifyPlaceOrderButtonClickable"/>
+          <include name="verifyPriceDetails"/>
+          <include name="verifyApplyCouponWithoutCode"/>
+          <include name="verifyCartItemCount"/>
+          <include name="verifyProductSelection"/>
+          <include name="verifyMoveToWishlist"/>
         </methods>
-      </class> <!-- com.Tests.EndToEndTestCase -->
+      </class> <!-- com.Tests.CartPageTest -->
     </classes>
   </test> <!-- Test(failed) -->
 </suite> <!-- Failed suite [Suite] -->

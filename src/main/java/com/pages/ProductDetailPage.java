@@ -21,346 +21,299 @@ import com.utilities.WaitFor;
 
 public class ProductDetailPage {
 
-	public ProductDetailPage() {
+
+	@FindBy(css = ".pdp-title")
+	WebElement brandName;
+
+	@FindBy(css = ".pdp-name")
+	WebElement productName;
+
+	@FindBy(xpath = "//span[@class='pdp-price']")
+	WebElement sellingPrice;
+
+	@FindBy(css = ".pdp-mrp s")
+	WebElement originalPrice;
+
+	@FindBy(css = ".pdp-discount")
+	WebElement discountPercent;
+
+	@FindBy(css = ".index-overallRating")
+	WebElement overallRating;
+
+	@FindBy(xpath = "//ul[@class=\"colors-shadeList colors-shadeListDesktop\"]/li")
+	List<WebElement> shadeSwatch;
+
+	@FindBy(xpath = "//div[contains(@class,'pdp-add-to-bag')]")
+	WebElement addToBagButton;
+
+	@FindBy(xpath = "//a[@class=\"pdp-goToCart pdp-add-to-bag pdp-button pdp-flex pdp-center \"]")
+	WebElement goToBagButton;
+
+	@FindBy(css=".pdp-add-to-wishlist")
+	WebElement WishListButton;
+
+	@FindBy(xpath = "//div[@class=\"pdp-productDescriptors\"]")
+	WebElement productDescription;
+	
+	
+	@FindBy(xpath="//input[@class=\"pincode-code\"]")
+	WebElement Pincode;
+	
+	@FindBy(xpath="//input[@value=\"Check\"]")
+	WebElement checkField;
+	
+	@FindBy(xpath="//div[@class=\"breadcrumbs-container\"]")
+	WebElement breadcrumb;
+	
+	@FindBy(xpath="//button[@class=\"pincode-check-another-pincode pincode-button\"]")
+	WebElement ChangePincodeButton;
+	
+	@FindBy(xpath="(//h4[@class=\"pincode-serviceabilityTitle\"])[1]")
+	WebElement deliveryAvailableMsg;
+	
+	@FindBy(xpath="//p[@class=\"pincode-error pincode-enterPincode\"]")
+	WebElement invalidPinMessage ;
+
+	{
 		PageFactory.initElements(KeyWord.driver, this);
 	}
 
-	@FindBy(css = "h1.pdp-title")
-	public WebElement productTitle;
+	public void clickaddToBagProduct() {
+		//WaitFor.elementToBeClickaBle(addToBagButton);
 
-	@FindBy(css = "h1.pdp-name")
-	WebElement productName;
-
-	@FindBy(css = "span.pdp-price")
-	public WebElement productPrice;
-
-	@FindBy(css = "span.pdp-mrp")
-	WebElement originalPrice;
-
-	@FindBy(css = "div.size-buttons-size-buttons button")
-	List<WebElement> sizes;
-
+		WaitFor.visibilityOfelement(addToBagButton);
+		WaitFor.elementToBeClickaBle(addToBagButton);
+		
+		KeyWord.clickOn(addToBagButton);
+		
+	}
 	
-	@FindBy(css = "span.pdp-discount")
-	WebElement discount;
-
-	@FindBy(css = "div.index-overallRating")
-	WebElement rating;
-	@FindBy(css = "span.size-buttons-size-error-message")
-	WebElement errormsg;
-
-	// Actions
-	@FindBy(xpath = "//div[contains(@class,'pdp-add-to-wishlist')]")
-	WebElement wishList;
-
-	@FindBy(css = "div.pdp-add-to-bag")
-	WebElement addToBag;
-
-	@FindBy(xpath = "//span[text()='GO TO BAG']")
-	WebElement goToBag;
-
-	@FindBy(css = "input.pincode-code")
-	WebElement pinCode;
-
-	@FindBy(css = "input.pincode-check")
-	WebElement checkButton;
-
-	@FindBy(xpath = "//button[@class=\"pincode-check-another-pincode pincode-button\"]")
-	WebElement changePinCodeBtn;
-
-	@FindBy(css = "li.pincode-serviceabilityItem")
-	List<WebElement> pincodeMsg;
+	public void enterPincode(String pincode) {
+		WaitFor.visibilityOfelement(Pincode);
+		Pincode.clear();
+		KeyWord.type(Pincode, pincode);
+	}
 	
-	@FindBy(xpath="//p[contains(text(),'Please enter PIN code to check delivery time & Pay on Delivery Availability')]")
-    WebElement enterValidPincodeMsg;
+	public boolean isBreadcrumbVisible() {
+		return KeyWord.isDisplayed(breadcrumb);
+	}
 	
-	@FindBy(css = "p.pincode-error")
-	WebElement invalidPincodeMsg;
+	
+	
+	
+	public String getTextOfBreadcrumb() {
+		return KeyWord.getText(breadcrumb);
+	}
+	
+	public String getPdpUrl() {
+		return KeyWord.driver.getCurrentUrl();
+	}
+	
+	
+	public void clickOnPincodeButton() {
+		WaitFor.visibilityOfelement(Pincode);
+		WaitFor.elementToBeClickaBle(Pincode);
+		
+		KeyWord.clickOn(Pincode);
+		
+	}
+	
+	public void clickOnPincodeCheckField() {
 
-	@FindBy(css = "div.pdp-offers-container")
-	WebElement offers;
+//		WaitFor.visibilityOfelement(Pincode);
+//		WaitFor.elementToBeClickaBle(Pincode);
+//		
+//		KeyWord.clickOn(Pincode);
+//		
+		WaitFor.visibilityOfelement(checkField);
+		WaitFor.elementToBeClickaBle(checkField);
+		KeyWord.clickOn(checkField);
+		
+	}
+	
+	public void clickOnChangePincodeButton() {
+		WaitFor.visibilityOfelement(ChangePincodeButton);
+		WaitFor.elementToBeClickaBle(ChangePincodeButton);
+		KeyWord.clickOn(ChangePincodeButton);
+		
+	}
+	
+	public String getDeliveryAvailableMessage() {
+		WaitFor.visibilityOfelement(deliveryAvailableMsg);
+		return KeyWord.getText(deliveryAvailableMsg);
+	}
+	
+	public boolean isDeliveryAvailable() {
+		try {
+			return deliveryAvailableMsg.isDisplayed();
+		}
+		catch(Exception e) {
+			return false;
+		}
+		
+	}
+	
+	public String getInvalidPinMessage() {
+		WaitFor.visibilityOfelement(invalidPinMessage);
+		return invalidPinMessage.getText();
+		
+	}
+	
+	
+	public boolean isWishListButtonIsPresent() {
+		return KeyWord.isDisplayed(WishListButton);
+	}
+	
+	public void clickOnwishListButton() {
+		WaitFor.visibilityOfelement(WishListButton);
+		WaitFor.elementToBeClickaBle(WishListButton);
+		KeyWord.clickOn(WishListButton);
+		
+		
+	}
+	
+	
+	
+	
+	public boolean isaddtobagbuttonvisible() {
+		return KeyWord.isDisplayed(addToBagButton)
+;	}
 
-	@FindBy(css = "div.pdp-productDescriptorsContainer")
-	WebElement productDetails;
+	public void clickGoToBag() {
+		KeyWord.clickOn(goToBagButton);
 
-	@FindBy(css = "li.product-base")
-	List<WebElement> similarProductsList;
+	}
 
-	@FindBy(css = "div.image-grid-image")
-	List<WebElement> productImages;
+	public void clickWishList() {
+		KeyWord.clickOn(WishListButton);
+	}
 
-	@FindBy(css = "[href=\"/checkout/cart\"]")
-	List<WebElement> onCart;
+	public void selectShade(int index) {
+		KeyWord.clickOn(shadeSwatch.get(index));
 
-	@FindBy(css = ".image-image")
-	WebElement popupCloseBtn;
+	}
 
-	public String getProductTitle() {
-		return productTitle.getText();
+	public String getBrandName() {
+		System.out.println(brandName);
+		return KeyWord.getText(brandName);
+		
 	}
 
 	public String getProductName() {
-		return productName.getText();
+		return KeyWord.getText(productName);
 	}
 
-	public boolean areProductImagesDisplayed() {
-		WaitFor.waitForElementToBeClickable(productImages);
-		return productImages.size() > 0;
-	}
-
-	public String getProductPrice() {
-		return productPrice.getText();
-	}
-
-	public String getOriginalPrice() {
-		return originalPrice.getText();
-	}
-
-	public String getDiscount() {
-		return discount.getText();
-	}
-
-	public String getRating() {
-		return rating.getText();
-	}
-
-	public void closePopupIfPresent() {
-		try {
-			WaitFor.waitForElementToBeClickable(popupCloseBtn);
-
-			popupCloseBtn.click();
-		} catch (Exception e) {
-
-		}
-	}
-
-	public void clickAddToBag() {
-		closePopupIfPresent();
-		WaitFor.waitForElementToBeClickable(addToBag);
-		addToBag.click();
+	public String getSellingPrice() {
+		return KeyWord.getText(sellingPrice);
 
 	}
-
-	public void clickGoToBag() {
-		WaitFor.waitForElementToBeClickable(goToBag);
-		goToBag.click();
-	}
-
-	public void clickWishlist() {
-		WaitFor.waitForElementToBeClickable(wishList);
-		wishList.click();
-	}
-
-	public void clickChangePinCode() {
-		WaitFor.waitForElementToBeClickable(changePinCodeBtn);
-		changePinCodeBtn.click();
-	}
-
+	
 	public String generateRandomPin() {
 	    Random rand = new Random();
 	    int pin = 100000 + rand.nextInt(900000);
 	    return String.valueOf(pin);
 	}
 	
-	public void enterPincode(String code) {
-		WaitFor.waitForElementToBeVisible(checkButton);
+	public boolean isInvalidPinMessageDisplayed() {
 		try {
-			pinCode.clear();
-		} catch (Exception e) {
-			// ignore
+			return invalidPinMessage.isDisplayed();
 		}
-		pinCode.sendKeys(code);
-		checkButton.click();
-		try {
-			if (changePinCodeBtn.isDisplayed()) {
-				WaitFor.waitForElementToBeClickable(changePinCodeBtn);
-				pinCode.sendKeys(code);
-				checkButton.click();
-			} else {
-				WaitFor.waitForElements(pincodeMsg);
-			}
-		} catch (Exception e) {
-			// fallback wait
-			WaitFor.waitForElements(pincodeMsg);
+		catch(Exception e) {
+			return false;
 		}
 	}
 
-	public String getPincodeErrorMsg() {
-		try {
-			if (enterValidPincodeMsg != null && enterValidPincodeMsg.isDisplayed()) {
-				return enterValidPincodeMsg.getText();
-			}
-		} catch (Exception e) {
-			// ignore
-		}
-		// if specific element not found, look into pincode messages list
-		try {
-			WaitFor.waitForElements(pincodeMsg);
-			for (WebElement el : pincodeMsg) {
-				String text = el.getText();
-				if (!text.trim().isEmpty()) {
-					return text;
-				}
-			}
-		} catch (Exception e) {
-			// ignore
-		}
-		return "";
+	public String getOriginalPrice() {
+		return KeyWord.getText(originalPrice);
+	}
+
+	public boolean isAddTobagButtonEnabled() {
+		return KeyWord.isEnabled(addToBagButton);
+
+	}
+
+	public boolean isGotoBagIsVisible() {
+		return KeyWord.isDisplayed(goToBagButton);
+	}
+	
+	public boolean isProductPriceIsVisible() {
+		KeyWord.isDisplayed(sellingPrice);
+		return KeyWord.isDisplayed(originalPrice);
+	}
+
+	public boolean isDescriptionVisible() {
+		return KeyWord.isDisplayed(productDescription);
+	}
+
+	public boolean isRatingVisible() {
+		return KeyWord.isDisplayed(overallRating);
+	}
+
+	public boolean isBreadcrumbCorrect() {
+		String pageSource = KeyWord.getPageSource().toLowerCase();
+		return pageSource.contains("beauty") || pageSource.contains("Lipstick");
+	}
+	
+	public boolean isProductDetailsPageLoaded() {
+		return KeyWord.isDisplayed(brandName) && KeyWord.isDisplayed(productName) && KeyWord.isDisplayed(sellingPrice);
+	}
+	
+	public boolean isAddToBagButtonDisplayed() {
+		return KeyWord.isDisplayed(addToBagButton);
+	}
+	
+	public boolean isWishListButtonDisplayed() {
+		return KeyWord.isDisplayed(WishListButton);
+	}
+
+	public String getCurrentUrl() {
+		return  KeyWord.getCurrentUrl();
+	 }
+	
+	public String getPageSource() {
+		return KeyWord.getPageSource();
+	}
+
+	public void clickChangeButton() {
+		WaitFor.visibilityOfelement(ChangePincodeButton);
+		KeyWord.clickOn(ChangePincodeButton);
 		
 	}
-	public String getInvalidPincodeToast() {
-	    WebDriverWait wait = new WebDriverWait(KeyWord.driver, Duration.ofSeconds(10));
+	
+	public void switchToChildWindow() {
+		String parentWindow=KeyWord.driver.getWindowHandle();
+		for(String window:KeyWord.driver.getWindowHandles()) {
+			if(!window.equals(parentWindow)) {
+				KeyWord.driver.switchTo().window(window);
+				break;
+			}
+		}
+	}
+	
+	public void switchToParentWindow() {
+		String parentWindow=KeyWord.driver.getWindowHandle();
+		for(String window:KeyWord.driver.getWindowHandles()) {
+			KeyWord.driver.switchTo().window(window);
+			break;
+		}
+	}
 
-	    try {
-	        WebElement toast = wait.until(ExpectedConditions.visibilityOfElementLocated(
-	            By.xpath("//*[contains(text(),'valid pincode')]")
-	        ));
+	public void closePdpPage() {
+		KeyWord.driver.close();
+	}
+	
+	public int getBagCount() {
+		
+		By bagCount=By.xpath("//span[contains(@class,'desktop-badge')]");
+		String count=(KeyWord.driver.findElement(bagCount).getText().trim());
+		// TODO Auto-generated method stub
 
-	        return toast.getText();
-	    } catch (Exception e) {
-	        // fallback to invalidPincodeMsg element
-	        try {
-	            if (invalidPincodeMsg != null && invalidPincodeMsg.isDisplayed()) {
-	                return invalidPincodeMsg.getText();
-	            }
-	        } catch (Exception ex) {
-	            // ignore
-	        }
-	        return "";
+	    if (count.isEmpty()) {
+	        return 0;
 	    }
-	}
-	public String getPinCodeMsg() {
-		WaitFor.waitForElements(pincodeMsg); // imp
-		for (WebElement el : pincodeMsg) {
-			String text = el.getText();
-			if (!text.trim().isEmpty()) {
-				return text;
-			}
-		}
-		return "";
+
+		return Integer.parseInt(count);
 	}
 
-	public String getInvalidPinCodeMsg() {
-		try {
-			WaitFor.waitForElementToBeVisible(invalidPincodeMsg);
-			return invalidPincodeMsg.getText();
-		} catch (Exception e) {
-			return "";
-		}
-	}
-
-	public void clickFirstSimilarProduct() {
-		similarProductsList.get(0).click();
-	}
-
-	public boolean isProductPageLoaded() {
-		return productName.isDisplayed();
-	}
-
-	public boolean isAddToBagDisplayed() {
-
-		return addToBag.isDisplayed();
-	}
-
-	public boolean isErrormsgdisplayed() {
-		return errormsg.isDisplayed();
-	}
-
-	public boolean isOnCartPage() {
-		return KeyWord.getCurrentUrl().contains("cart");
-	}
-
-	public boolean isWishlistSelected() {
-		return KeyWord.getCurrentUrl().contains("login");
-	}
-
-	public boolean selectSize() {
-		for (int i = 0; i < sizes.size(); i++) {
-
-			try {
-				WebElement size = sizes.get(i);
-
-				if (size.isDisplayed() && size.isEnabled()) {
-
-					((JavascriptExecutor) KeyWord.driver).executeScript("arguments[0].scrollIntoView(true);", size);
-
-					WaitFor.waitForElementToBeClickable(size);
-					size.click();
-
-					try {
-						WaitFor.until(ExpectedConditions.attributeContains(size, "class", "selected"));
-					} catch (Exception e) {
-
-					}
-
-					if (size.getAttribute("class").contains("selected")) {
-						System.out.println("Size selected: " + size.getText());
-						return true;
-					}
-				}
-
-			} catch (StaleElementReferenceException e) {
-
-				System.out.println("Stale element, retrying...");
-
-				try {
-					WebElement size = sizes.get(i);
-
-					((JavascriptExecutor) KeyWord.driver).executeScript("arguments[0].scrollIntoView(true);", size);
-
-					((JavascriptExecutor) KeyWord.driver).executeScript("arguments[0].click();", size);
-
-					return true;
-
-				} catch (Exception ex) {
-
-				}
-
-			} catch (Exception e) {
-
-				try {
-					WebElement size = sizes.get(i);
-					((JavascriptExecutor) KeyWord.driver).executeScript("arguments[0].click();", size);
-					return true;
-				} catch (Exception ex) {
-
-				}
-			}
-		}
-
-		return false;
-	}
-
-	public boolean isGoToBagDisplayed() {
-		try {
-			WaitFor.waitForElementToBeVisible(goToBag);
-			return goToBag.isDisplayed();
-		} catch (Exception e) {
-			return false;
-		}
-	}
-
-	// New helper: is add to bag clickable
-	public boolean isAddToBagClickable() {
-		try {
-			WaitFor.waitForElementToBeClickable(addToBag);
-			return addToBag.isEnabled();
-		} catch (Exception e) {
-			return false;
-		}
-	}
-
-	// New helper: check wishlist active state by checking class or aria attribute
-	public boolean isWishlistActiveStateSelected() {
-		try {
-			if (wishList == null) return false;
-			String cls = wishList.getAttribute("class");
-			if (cls != null && cls.toLowerCase().contains("active")) return true;
-			String aria = wishList.getAttribute("aria-pressed");
-			return "true".equalsIgnoreCase(aria);
-		} catch (Exception e) {
-			return false;
-		}
-	}
 
 }

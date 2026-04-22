@@ -1,34 +1,160 @@
 package com.pages;
 
-import org.openqa.selenium.By;
+import java.util.List;
+
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
+
 import com.testbase.KeyWord;
+import com.testbase.KeyWord.*;
 import com.utilities.WaitFor;
-
+/**
+ * HomePage ─────── This class represents the "Home" page of the Myntra website.
+ * It contains WebElements and methods to interact with the elements on that
+ * page.
+ *
+ * Example usage:
+ *
+ * public class MyTest {
+ *
+ * @Test public void testHomePage() { HomePage homePage = new HomePage();
+ *       boolean isLogoDisplayed = homePage.isMyntraLogoDisplayed(); // ... other
+ *       steps ... } }
+ *
+ * @author sheetal-kamble
+ */
 public class HomePage {
-	By searchresult = By.xpath("//input[contains(@class,'desktop-searchBar')]");
-	By Noresult = By.xpath("//p[@class=\"index-infoBig\"]");
+	@FindBy(xpath = "//a[@class=\"myntraweb-sprite desktop-logo sprites-headerLogo \"]")
+	WebElement myntraLogo;
 
-	public void clickOnSearchResult() {
-		WaitFor.waitForElementToBeClickable(searchresult);
-		KeyWord.clickOn(searchresult);
+	@FindBy(xpath = "//input[@class=\"desktop-searchBar\"]")
+	WebElement searchBar;
+
+	@FindBy(xpath = "//a[@data-group=\"beauty\"]")
+	WebElement beautyMenuLink;
+
+	@FindBy(xpath = "//span[text()=\"Wishlist\"]")
+	WebElement wishlistIcon;
+	
+	@FindBy(xpath = "//span[text()='Profile']")
+	WebElement profileIcon;
+	
+	@FindBy(xpath = "(//a[@href=\"/my/orders\"])[2]")
+	WebElement myOrdersLink;
+	
+	
+	@FindBy(xpath = "//input[@class=\"desktop-searchBar\"]")
+	WebElement searchResultsHeader;
+	
+	@FindBy(xpath = "//ul[@class=\"desktop-group\"]/li")
+	List<WebElement> searchResultsList;
+	
+	@FindBy(xpath = "//p[@class=\"index-infoBig\"]")
+	WebElement CouldNotFindAnyMatches;
+	
+	{
+		PageFactory.initElements(KeyWord.driver, this);
+	}
+	
+	public String getCouldNotFindAnyMatchesText() {
+		WaitFor.visibilityOfelement(CouldNotFindAnyMatches);
+		return CouldNotFindAnyMatches.getText();
+	}
+	
+	
+	public boolean isSearchBarVisible() {
+		return true;
+	}
+	
+	public int getCountOfSearchResults() {
+		WaitFor.visibilityOfelement(searchResultsHeader);
+		return searchResultsList.size();
+	}
+	
+	
+	public void clickOnSearchResultsHeader() {
+		WaitFor.elementToBeClickaBle(searchResultsHeader);
+		WaitFor.untilElementGotStale(searchResultsHeader);
+		searchResultsHeader.click();
+	}
+	
+	public void enterTextOnSearchBar(String text) {
+		WaitFor.visibilityOfelement(searchResultsHeader);
+		WaitFor.elementToBeClickaBle(searchResultsHeader);
+		KeyWord.type(searchResultsHeader, text);
+		//searchResultsHeader.sendKeys(text);
+	}
+	
+	public void enterPressOnSearchBar() {
+		WaitFor.visibilityOfelement(searchResultsHeader);
+		KeyWord.Enter(searchResultsHeader);
+//		searchResultsHeader.sendKeys(Keys.ENTER);
 	}
 
-	public void typeAndHitSearchBar(String Text) {
-		KeyWord.enterTextAndHit(searchresult, Text);
-	}
-
-	public boolean isNoResultMessageDisplayed() {
-		try {
-			return KeyWord.isDisplayed(Noresult);
-		} catch (Exception e) {
-			return false;
+	public boolean areProductSearchingListDisplayed() {
+		for(WebElement searchResult : searchResultsList) {
+			if(searchResult.isDisplayed()) {
+				return true;
+			}
 		}
+		return false;
 	}
 
-	public boolean isHomePageDisplayed() {
-			return KeyWord.isDisplayed(searchresult);
-		
+
+
+	{
+		PageFactory.initElements(KeyWord.driver, this);
+	}
+
+	public boolean isMyntraLogoDisplayed() {
+		WaitFor.visibilityOfelement(myntraLogo);
+		return myntraLogo.isDisplayed();
+	}
+
+	public boolean isSearchBarDisplayed() {
+		WaitFor.visibilityOfelement(searchBar);
+		return searchBar.isDisplayed();
+	}
+
+	public boolean isWishlistIconDisplayed() {
+		WaitFor.visibilityOfelement(wishlistIcon);
+		return wishlistIcon.isDisplayed();
+	}
+	public void clickBeautyMenu() {
+		com.utilities.WaitFor.elementToBeClickaBle(beautyMenuLink);
+		beautyMenuLink.click();
 	}
 
 	
+	public String getCurrentUrl() {
+		// TODO Auto-generated method stub
+		return KeyWord.getCurrentUrl();
+				
+	}
+
+	public void clickOnProfileIcon() {
+		com.utilities.WaitFor.elementToBeClickaBle(profileIcon);
+		profileIcon.click();
+		
+		
+	}
+
+	public void clickOnMyOrders() {
+		// TODO Auto-generated method stub
+		com.utilities.WaitFor.elementToBeClickaBle(myOrdersLink);
+		myOrdersLink.click();
+		
+	}
+
+	public void clickOnWishlistIcon() {
+		// TODO Auto-generated method stub
+		com.utilities.WaitFor.elementToBeClickaBle(wishlistIcon);
+		wishlistIcon.click();
+	}
+	
+	
+	
+	
+
 }

@@ -5,26 +5,41 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class ConfigReader {
-	// Path of the properties file where key-value data is stored
-	public static String file_path = "src/test/resources/config.properties";
-	// Open the properties file
-	private static final Properties prop = new Properties();
+	private static final Properties props = new Properties();
 
-	// Method to read value from properties file using a key
-	public static String getProperties(String Key) throws IOException {
+	/**
+	 * This block runs once automatically when ConfigReader is first used. It opens
+	 * the config.properties file and loads all the values.
+	 */
+	static {
+
 		try {
-			// Open the properties file
-			FileInputStream file = new FileInputStream(file_path);
-
-			// Load file data into Properties object
-			prop.load(file);
+			FileInputStream file = new FileInputStream("src/test/resources/config.properties");
+			props.load(file);
 		} catch (IOException e) {
-			System.out.println(e.getMessage());
+			throw new RuntimeException("ERROR: config.properties not found! " + e.getMessage());
 		}
 
-		// Return value of the given key
-		return prop.getProperty(Key);
+	}
 
+	/**
+	 * No objects needed — all methods are static
+	 */
+
+	private ConfigReader() {
+
+	}
+
+	/**
+	 * Returns the value for the given key. Example: ConfigReader.get("browser") →
+	 * "chrome"
+	 */
+	public static String get(String key) {
+		String value = props.getProperty(key);
+		if (value == null) {
+			throw new RuntimeException("Key '" + key + "' not found in config.properties");
+		}
+		return value.trim();
 	}
 
 }

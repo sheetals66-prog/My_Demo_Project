@@ -7,6 +7,7 @@ import org.testng.Assert;
 
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 
 import com.dataprovider.MyntraSearchTest;
 import com.listener.Mylistener;
@@ -20,93 +21,134 @@ import com.utilities.WaitFor;
 
 //@Listeners(Mylistener.class)
 public class ProductListingPageTest extends Testbase {
+	
+	SoftAssert softly = new SoftAssert();
 	@Test
 	public void toVerifyProductListingPageIsLoaded() {
-		HomePage sr = new HomePage();
+		HomePage srp = new HomePage();
+		srp.enterTextOnSearchBar("Tshirst");
+		srp.enterPressOnSearchBar();
 		ProductListingPage plp = new ProductListingPage();
-		sr.clickOnSearchResult();
-		sr.typeAndHitSearchBar("kids");
-		Assert.assertTrue(plp.isProductDetailPageLoaded(), "Product listing page did not load properly");
+
+		String breadCrumbText = plp.getPlpBreadCrumb();
+		String title = plp.getPlpTitle();
+		softly.assertTrue(breadCrumbText.toLowerCase().contains("T"), "Breadcrumb does not contain Tshirts");
+		softly.assertTrue(title.toLowerCase().contains("Tshirts"), "Page title does not contain Tshirts");
+		softly.assertTrue(plp.getProductCount() > 0, "No products displayed on PLP");
+		softly.assertAll();
+		System.out.println("Products are Displayed..");
 	}
 
 	@Test
 	public void toVerifyProductsAreDisplayed() {
-		HomePage sr = new HomePage();
+		HomePage srp = new HomePage();
 		ProductListingPage plp = new ProductListingPage();
-		sr.clickOnSearchResult();
-		sr.typeAndHitSearchBar("kids");
-		Assert.assertTrue(plp.productsIsDisplayedBeforeApplyingFilters(), "Products are not displayed on listing page");
+		srp.enterTextOnSearchBar("Tshirst");
+		srp.enterPressOnSearchBar();
+		String title = plp.getPlpTitle();
+		Assert.assertTrue(title.toLowerCase().contains("Tshirts"), "Page title does not contain Tshirts");
 		System.out.println("Products are Displayed..");
 	}
 
 	@Test
 	public void toVerifyProductCountIsDisplayed() {
-		HomePage sr = new HomePage();
+		HomePage srp = new HomePage();
 		ProductListingPage plp = new ProductListingPage();
-		sr.clickOnSearchResult();
-		sr.typeAndHitSearchBar("kids");
-		Assert.assertTrue(plp.productsIsDisplayedBeforeApplyingFilters(), "Product count is not displayed");
-		int count = plp.getProductCountBeforeFilter();
-		System.out.println("Total products count: " + count);
-		Assert.assertTrue(count > 0, "Product count should be greater than zero");
+		srp.enterTextOnSearchBar("Tshirst");
+		srp.enterPressOnSearchBar();
+		Assert.assertTrue(plp.getProductCount()>0, "Product count is not displayed");
+		
+		
 	}
 
 	@Test
 	public void toVerifyProductCountIsDisplayedAfterApplyingFilter() {
-		HomePage sr = new HomePage();
-		ProductListingPage plp = new ProductListingPage();
-		sr.clickOnSearchResult();
-		sr.typeAndHitSearchBar("kids");
-		Assert.assertTrue(plp.productsIsDisplayedBeforeApplyingFilters(), "Products are not displayed on listing page");
-		int before = plp.getProductCountBeforeFilter();
-		System.out.println("products count before filter:" + before);
-		plp.selectGirlsFilter();
-		WaitFor.waitForElementToBeVisible(plp.title_count);
-		int after = plp.getProductCountAfterFilter();
-		System.out.println("products count after filter:" + after);
-		Assert.assertTrue(after <= before, "Product count did not reduce after applying filter");
-	}
 
+	    HomePage srp = new HomePage();
+	    ProductListingPage plp = new ProductListingPage();
+
+	    srp.enterTextOnSearchBar("Tshirts");
+	    srp.enterPressOnSearchBar();
+
+	    // verify products are displayed
+	    Assert.assertTrue(plp.getProductCount() > 0,
+	            "Products are not displayed on listing page");
+
+	    int before = plp.getProductCount();
+	    System.out.println("products count before filter: " + before);
+
+	    plp.selectGirlsFilter();
+
+	 //  WaitFor.waitForElementToBeVisible(plp.resultCountText);
+
+	    int after = plp.getProductCount();
+	    System.out.println("products count after filter: " + after);
+
+	    Assert.assertTrue(after <= before,
+	            "Product count did not reduce after applying filter");
+	}
 	@Test
 	public void toVerifyBoysFilterIsSelected() throws InterruptedException {
-		HomePage sr = new HomePage();
-		ProductListingPage plp = new ProductListingPage();
-		sr.clickOnSearchResult();
-		sr.typeAndHitSearchBar("kids");
-		Assert.assertTrue(plp.productsIsDisplayedBeforeApplyingFilters());
-		int before = plp.getProductCountBeforeFilter();
-		System.out.println("products count before filter:" + before);
-		plp.selectBoysFilter();
-		WaitFor.waitForElementToBeVisible(plp.title_count);
-		int after = plp.getProductCountAfterFilter();
-		System.out.println("products count after filter:" + after);
-		Assert.assertTrue(before >= after, "filter is not working properly");
+		  HomePage srp = new HomePage();
+		    ProductListingPage plp = new ProductListingPage();
+
+		    srp.enterTextOnSearchBar("Tshirts");
+		    srp.enterPressOnSearchBar();
+
+		    // verify products are displayed
+		    Assert.assertTrue(plp.getProductCount() > 0,
+		            "Products are not displayed on listing page");
+
+		    int before = plp.getProductCount();
+		    System.out.println("products count before filter: " + before);
+
+		    plp.selectBoysFilter();
+
+		 //  WaitFor.waitForElementToBeVisible(plp.resultCountText);
+
+		    int after = plp.getProductCount();
+		    System.out.println("products count after filter: " + after);
+
+		    Assert.assertTrue(after <= before,
+		            "Product count did not reduce after applying filter");
 
 	}
 
 	@Test
 	public void toVerifyGirlsFilterIsSelected() {
-		HomePage sr = new HomePage();
-		ProductListingPage plp = new ProductListingPage();
-		sr.clickOnSearchResult();
-		sr.typeAndHitSearchBar("kids");
-		int before = plp.getProductCountBeforeFilter();
-		System.out.println("products count before filter:" + before);
-		plp.selectGirlsFilter();
-		int after = plp.getProductCountAfterFilter();
-		System.out.println("products count after filter:" + after);
-		Assert.assertTrue(before >= after, "filter is not working properly");
+		
+	    HomePage srp = new HomePage();
+	    ProductListingPage plp = new ProductListingPage();
 
+	    srp.enterTextOnSearchBar("Tshirts");
+	    srp.enterPressOnSearchBar();
+
+	    // verify products are displayed
+	    Assert.assertTrue(plp.getProductCount() > 0,
+	            "Products are not displayed on listing page");
+
+	    int before = plp.getProductCount();
+	    System.out.println("products count before filter: " + before);
+
+	    plp.selectGirlsFilter();
+
+	 //  WaitFor.waitForElementToBeVisible(plp.resultCountText);
+
+	    int after = plp.getProductCount();
+	    System.out.println("products count after filter: " + after);
+
+	    Assert.assertTrue(after <= before,
+	            "Product count did not reduce after applying filter");
 	}
 
 	@Test
 	public void toVerifyCategoriesFilterIsSelected() {
 		HomePage sr = new HomePage();
 		ProductListingPage plp = new ProductListingPage();
-		sr.clickOnSearchResult();
+		sr.clickOnSearchResultsHeader();
 		sr.typeAndHitSearchBar("kids");
 		int before = plp.getProductCountBeforeFilter();
-		plp.openCategoriesFilter();
+		plp.;
 		plp.searchCategories("Tshirts");
 		System.out.println("searched category: Tshirts");
 		plp.selectCategories("Tshirts");
@@ -122,7 +164,7 @@ public class ProductListingPageTest extends Testbase {
 		ProductListingPage plp = new ProductListingPage();
 		ProductDetailPage pd = new ProductDetailPage();
 		CartPage cart = new CartPage();
-		sr.clickOnSearchResult();
+		sr.clickOnSearchResultsHeader();
 		sr.typeAndHitSearchBar("kids");
 		plp.openCategoriesFilter();
 		plp.searchCategories(category);
@@ -130,8 +172,8 @@ public class ProductListingPageTest extends Testbase {
 		WaitFor.waitForElementToBeVisible(plp.title_count);
 		System.out.println("Category filter applied: " + category);
 		plp.isProductDetailPageLoaded();
-		Assert.assertTrue(plp.isProductDetailPageLoaded(),
-				"Product detail page did not load after applying category filter: " + category);
+		Assert.assertTrue(plp.isCategoryFilterApplied(category),
+	            "Category filter not applied correctly: " + category);
 	}
 
 	@Test(dataProvider = "BrandData", dataProviderClass = MyntraSearchTest.class)
@@ -140,7 +182,7 @@ public class ProductListingPageTest extends Testbase {
 		ProductListingPage plp = new ProductListingPage();
 		ProductDetailPage pd = new ProductDetailPage();
 		CartPage cart = new CartPage();
-		sr.clickOnSearchResult();
+		sr.clickOnSearchResultsHeader();
 		sr.typeAndHitSearchBar("kids");
 		plp.openBrandFilter();
 		plp.selectBrandDirectly(brand);
@@ -156,7 +198,7 @@ public class ProductListingPageTest extends Testbase {
 	public void toVerifyBrandFilterIsSelected() {
 		HomePage sr = new HomePage();
 		ProductListingPage plp = new ProductListingPage();
-		sr.clickOnSearchResult();
+		sr.clickOnSearchResultsHeader();
 		sr.typeAndHitSearchBar("Kids");
 		int before = plp.getProductCountBeforeFilter();
 		plp.openBrandFilter();
@@ -173,7 +215,7 @@ public class ProductListingPageTest extends Testbase {
 	public void toVerifycolorFilterIsSelected() {
 		HomePage sr = new HomePage();
 		ProductListingPage plp = new ProductListingPage();
-		sr.clickOnSearchResult();
+		sr.clickOnSearchResultsHeader();
 		sr.typeAndHitSearchBar("Kids");
 		int before = plp.getProductCountBeforeFilter();
 		plp.openColorFilter();
@@ -189,7 +231,7 @@ public class ProductListingPageTest extends Testbase {
 		ProductListingPage plp = new ProductListingPage();
 		ProductDetailPage pd = new ProductDetailPage();
 		CartPage cart = new CartPage();
-		sr.clickOnSearchResult();
+		sr.clickOnSearchResultsHeader();
 		sr.typeAndHitSearchBar("kids");
 		plp.openColorFilter();
 		plp.selectcolor(color);
@@ -206,7 +248,7 @@ public class ProductListingPageTest extends Testbase {
 
 		HomePage sr = new HomePage();
 		ProductListingPage plp = new ProductListingPage();
-		sr.clickOnSearchResult();
+		sr.clickOnSearchResultsHeader();
 		sr.typeAndHitSearchBar("kids");
 		plp.openCategoriesFilter();
 		plp.searchCategories("Tshirts");
@@ -223,7 +265,7 @@ public class ProductListingPageTest extends Testbase {
 		public void toVerifyDiscountFilterOnPlpPageForTshirts(String discountRange) {
 		HomePage sr = new HomePage();
 		ProductListingPage plp = new ProductListingPage();
-		sr.clickOnSearchResult();
+		sr.clickOnSearchResultsHeader();
 		sr.typeAndHitSearchBar("Kids");
 		int before = plp.getProductCountBeforeFilter();
 		plp.openCategoriesFilter();
@@ -247,7 +289,7 @@ public class ProductListingPageTest extends Testbase {
 		ProductListingPage plp = new ProductListingPage();
 		ProductDetailPage pd = new ProductDetailPage();
 		CartPage cart = new CartPage();
-		sr.clickOnSearchResult();
+		sr.clickOnSearchResultsHeader();
 		sr.typeAndHitSearchBar(SearchText);
 		plp.openCategoriesFilter();
 		plp.searchCategories(Category);
@@ -268,7 +310,7 @@ public class ProductListingPageTest extends Testbase {
 	public void toVerifyDiscountFilterIsSelected() {
 		HomePage sr = new HomePage();
 		ProductListingPage plp = new ProductListingPage();
-		sr.clickOnSearchResult();
+		sr.clickOnSearchResultsHeader();
 		sr.typeAndHitSearchBar("Kids");
 		int before = plp.getProductCountBeforeFilter();
 		plp.selectDiscount("50% and above");
@@ -282,7 +324,7 @@ public class ProductListingPageTest extends Testbase {
 	public void toVerifyAgeFilerIsSelected() {
 		HomePage sr = new HomePage();
 		ProductListingPage plp = new ProductListingPage();
-		sr.clickOnSearchResult();
+		sr.clickOnSearchResultsHeader();
 		sr.typeAndHitSearchBar("Kids");
 		int before = plp.getProductCountBeforeFilter();
 		plp.openAgeFilter();
@@ -297,7 +339,7 @@ public class ProductListingPageTest extends Testbase {
 	public void toVerifySizeFilterIsSelected() {
 		HomePage sr = new HomePage();
 		ProductListingPage plp = new ProductListingPage();
-		sr.clickOnSearchResult();
+		sr.clickOnSearchResultsHeader();
 		sr.typeAndHitSearchBar("Kids");
 		int before = plp.getProductCountBeforeFilter();
 		plp.openSizeFilter();
@@ -312,7 +354,7 @@ public class ProductListingPageTest extends Testbase {
 	public void toVerifyPriceFilterIsSelected() {
 		HomePage sr = new HomePage();
 		ProductListingPage plp = new ProductListingPage();
-		sr.clickOnSearchResult();
+		sr.clickOnSearchResultsHeader();
 		sr.typeAndHitSearchBar("Kids");
 		int before = plp.getProductCountBeforeFilter();
 		plp.openSortOptions();
@@ -325,7 +367,7 @@ public class ProductListingPageTest extends Testbase {
 	public void toVerifyClearAllFilters() {
 		HomePage sr = new HomePage();
 		ProductListingPage plp = new ProductListingPage();
-		sr.clickOnSearchResult();
+		sr.clickOnSearchResultsHeader();
 		sr.typeAndHitSearchBar("Kids");
 		int before = plp.getProductCountBeforeFilter();
 		plp.openSizeFilter();
@@ -343,7 +385,7 @@ public class ProductListingPageTest extends Testbase {
 	public void toVerifyProductIsSelected() {
 		HomePage sr = new HomePage();
 		ProductListingPage plp = new ProductListingPage();
-		sr.clickOnSearchResult();
+		sr.clickOnSearchResultsHeader();
 		sr.typeAndHitSearchBar("Kids");
 		WaitFor.waitForElementToBeVisible(plp.title_count);
 		plp.selectBoysFilter();
@@ -374,7 +416,7 @@ public class ProductListingPageTest extends Testbase {
 	public void verifyNoresultsForInvalidFilter() {
 		HomePage sr = new HomePage();
 		ProductListingPage plp = new ProductListingPage();
-		sr.clickOnSearchResult();
+		sr.clickOnSearchResultsHeader();
 		sr.typeAndHitSearchBar("Kids");
 		int before = plp.getProductCountBeforeFilter();
 		plp.openCategoriesFilter();
@@ -389,7 +431,7 @@ public class ProductListingPageTest extends Testbase {
 	public void verifyNoresultsDisplayForInvalidBrand() {
 		HomePage sr = new HomePage();
 		ProductListingPage plp = new ProductListingPage();
-		sr.clickOnSearchResult();
+		sr.clickOnSearchResultsHeader();
 		sr.typeAndHitSearchBar("Kids");
 		int before = plp.getProductCountBeforeFilter();
 		plp.isBoysFilterSelected();
@@ -405,7 +447,7 @@ public class ProductListingPageTest extends Testbase {
 	public void toverifyNoresultsDisplayForInvalidColor() {
 		HomePage sr = new HomePage();
 		ProductListingPage plp = new ProductListingPage();
-		sr.clickOnSearchResult();
+		sr.clickOnSearchResultsHeader();
 		sr.typeAndHitSearchBar("Kids");
 		int before = plp.getProductCountBeforeFilter();
 		plp.openColorFilter();
@@ -421,7 +463,7 @@ public class ProductListingPageTest extends Testbase {
 		HomePage sr = new HomePage();
 		ProductListingPage plp = new ProductListingPage();
 
-		sr.clickOnSearchResult();
+		sr.clickOnSearchResultsHeader();
 		sr.typeAndHitSearchBar("Kids");
 		int before = plp.getProductCountBeforeFilter();
 		plp.selectDiscount("10% ");
@@ -435,7 +477,7 @@ public class ProductListingPageTest extends Testbase {
 		HomePage sr = new HomePage();
 		ProductListingPage plp = new ProductListingPage();
 
-		sr.clickOnSearchResult();
+		sr.clickOnSearchResultsHeader();
 		sr.typeAndHitSearchBar("@@@@");
 
 		plp.openBrandFilter();
@@ -449,7 +491,7 @@ public class ProductListingPageTest extends Testbase {
 		HomePage sr = new HomePage();
 		ProductListingPage plp = new ProductListingPage();
 
-		sr.clickOnSearchResult();
+		sr.clickOnSearchResultsHeader();
 		sr.typeAndHitSearchBar("@@@@");
 
 		plp.selectDiscount("50% and above");
@@ -461,7 +503,7 @@ public class ProductListingPageTest extends Testbase {
 		HomePage sr = new HomePage();
 		ProductListingPage plp = new ProductListingPage();
 
-		sr.clickOnSearchResult();
+		sr.clickOnSearchResultsHeader();
 		sr.typeAndHitSearchBar("Kids");
 		int before = plp.getProductCountBeforeFilter();
 		plp.openBrandFilter();
@@ -490,7 +532,7 @@ public class ProductListingPageTest extends Testbase {
 	public void verifyClearFilterWithoutApplying() {
 		HomePage sr = new HomePage();
 		ProductListingPage plp = new ProductListingPage();
-		sr.clickOnSearchResult();
+		sr.clickOnSearchResultsHeader();
 		sr.typeAndHitSearchBar("Kids");
 		plp.clearAllFilters();
 		Assert.assertTrue(true, "Clear filter should not crash");
@@ -500,7 +542,7 @@ public class ProductListingPageTest extends Testbase {
 	public void verifySortWhenNoProducts() {
 		HomePage sr = new HomePage();
 		ProductListingPage plp = new ProductListingPage();
-		sr.clickOnSearchResult();
+		sr.clickOnSearchResultsHeader();
 		sr.typeAndHitSearchBar("Kids");
 		plp.openSortOptions();
 		plp.selectSortOption("Price: Low to High");

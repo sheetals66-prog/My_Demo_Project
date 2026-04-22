@@ -8,35 +8,42 @@ import com.testbase.KeyWord;
 import com.utilities.WaitFor;
 
 public class LoginPage {
+	
+	@FindBy(css = ".wishlistLogin-button")
+	WebElement  wishListLoginPopUp;
+	
+	@FindBy(xpath="//div[@class=\"signInContainer\"]")
+	WebElement loginPage;
+	
+	{
+		
+		PageFactory.initElements(KeyWord.driver, this);
+	}
+	
+	public boolean isLoginPageDisplayed() {
+		WaitFor.visibilityOfelement(loginPage);
+		try {
+			return KeyWord.isDisplayed(loginPage);
+		}
+		catch(RuntimeException e) {
+			
+		}
+		return false;
+	}
+	
+	
+	public boolean isLoginPopUpDisplayed() {
+		com.utilities.WaitFor.visibilityOfelement(wishListLoginPopUp);
+		try {
+		return KeyWord.isDisplayed(wishListLoginPopUp);
+		}
+		catch(Exception e) {
+			return false;
+		}
+		
+	}
+	
+	
+	
 
-    @FindBy(css = ".wishlistLogin-button")
-    private WebElement wishListLoginPopUp;
-
-    @FindBy(xpath = "//div[@class='signInContainer']")
-    private WebElement loginPage;
-
- 
-    public LoginPage() {
-        PageFactory.initElements(KeyWord.driver, this);
-    }
-
- 
-    public boolean isLoginPageDisplayed() {
-        try {
-            WaitFor.waitForElementToBeVisible(loginPage);
-            return loginPage.isDisplayed();
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public boolean isLoginPopUpDisplayed() {
-        try {
-            WaitFor.waitForElementToBeVisible(wishListLoginPopUp);
-            return wishListLoginPopUp.isDisplayed();
-        } catch (Exception e) {
-            return false;
-        }
-    }
 }
-
