@@ -2,8 +2,12 @@ package com.pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Test;
@@ -14,6 +18,7 @@ import com.utilities.WaitFor;
 import static com.testbase.KeyWord.*;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductListingPage {
@@ -46,32 +51,35 @@ public class ProductListingPage {
 	By color_searchbar = By.xpath("(//span[@class=\"myntraweb-sprite filter-search-iconSearch sprites-search\"])[3]");
 	By color_list = By.xpath("//ul//li[@class='colour-listItem']");
 	By color_search = By.xpath("//input[@placeholder='Search for Color']");
+	@FindBy(xpath = "//div[@id='rootRailThumbLeft']")
+	WebElement leftSlider;
+
+	@FindBy(xpath = "//div[@id='rootRailThumbRight']")
+	WebElement rightSlider;
 
 	By discount = By.xpath("//span[text()='Discount Range']");
 	By discount_list = By.xpath("//label[@class=\"common-customRadio vertical-filters-label\"]");
-	By discount_option = By
-			.xpath("//div[@class='vertical-filters-filters']//label[contains(text(),'" + discount + "')]");
+	// dynamic discount option should be built at runtime - removed the incorrect
+	// static field
 
 	By agefilter = By.xpath("//h4[text()='Age']");
 
 	By bundles = By.xpath("//label[contains(text(),'Bundles')]");
-	By bundlesoption = By.xpath("//ul[@class='atsa-filters']//label[contains(text(),' \" + bundles + \" ')]");
+	// bundles option should be built at runtime - removed incorrect static field
 
 	By countryOfOrigin = By.xpath("//h4[contains(text(),'Country of Origin')]");
-	By countryOfOriginoption = By
-			.xpath("//ul[@class='atsa-filters']//label[contains(text(),' \" + CountryofOrigin + \" ')]");
+	// countryOfOrigin option should be built at runtime - removed incorrect static
+	// field
 
 	By size = By.xpath("//h4[text()=\"Size\"]");
-	
-	
+
 	@FindBy(css = ".sort-list li")
 	List<WebElement> sortOptions;
 	@FindBy(css = ".sort-sortBy, .sort-label")
 	WebElement sortButton;
 
-
 	By sort = By.xpath("//div[@class=\"sort-sortBy\"]");
-	By sort_list = By.xpath("//label[contains(text(),'\" + sortOption + \"')]");
+	// sort option locator is dynamic and built via helper below
 	By sortlist = By.xpath("//ul[@class=\"sort-list\"]/li");
 
 	By productcards = By.xpath("//li[@class=\"product-base\"]");
@@ -209,9 +217,26 @@ public class ProductListingPage {
 		return getElement(brand).isDisplayed();
 	}
 
+	/*
+	 * public void openBrandFilter() {
+	 * WaitFor.waitForElementToBeClickable(brand_searchbar);
+	 * getElement(brand_searchbar).click(); }
+	 */
 	public void openBrandFilter() {
-		WaitFor.waitForElementToBeClickable(brand_searchbar);
-		getElement(brand_searchbar).click();
+
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+		WebElement brandSearch = getElement(brand_searchbar);
+
+		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block:'center'});", brandSearch);
+
+		wait.until(ExpectedConditions.elementToBeClickable(brandSearch));
+
+		try {
+			brandSearch.click();
+		} catch (Exception e) {
+			((JavascriptExecutor) driver).executeScript("arguments[0].click();", brandSearch);
+		}
 	}
 
 	public boolean isBrandListDisplayed() {
@@ -220,17 +245,17 @@ public class ProductListingPage {
 
 	public void searchBrand(String brandName) {
 
-	    // Open Brand filter
-	    By brandFilter = By.xpath("//span[normalize-space()='Brand']");
-	    WaitFor.waitForElementToBeLocated(brandFilter);
-	    driver.findElement(brandFilter).click();
+		// Open Brand filter
+		By brandFilter = By.xpath("//span[normalize-space()='Brand']");
+		WaitFor.waitForElementToBeLocated(brandFilter);
+		driver.findElement(brandFilter).click();
 
-	    // Wait for search box
-	    By searchBox = By.xpath("//input[@placeholder='Search for brand']");
-	    WaitFor.waitForElementToBeVisible(searchBox);
+		// Wait for search box
+		By searchBox = By.xpath("//input[@placeholder='Search for brand']");
+		WaitFor.waitForElementToBeVisible(searchBox);
 
-	    // Enter brand
-	    driver.findElement(searchBox).sendKeys(brandName);
+		// Enter brand
+		driver.findElement(searchBox).sendKeys(brandName);
 	}
 
 	/*
@@ -242,11 +267,22 @@ public class ProductListingPage {
 	 * input); input.clear(); input.sendKeys(brandname); }
 	 */
 	public void selectBrandDirectly(String brandname) {
+
 		By brandOption = By.xpath("//label[contains(.,'" + brandname + "')]");
+
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
 		WebElement element = getElement(brandOption);
-		JavascriptExecutor js = (JavascriptExecutor) driver;
-		js.executeScript("arguments[0].scrollIntoView({block:'center'});", element);
-		js.executeScript("arguments[0].click();", element);
+
+		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block:'center'});", element);
+
+		wait.until(ExpectedConditions.elementToBeClickable(element));
+
+		try {
+			element.click();
+		} catch (Exception e) {
+			((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
+		}
 	}
 
 	public boolean isPriceFilterSectionDisplayed() {
@@ -290,6 +326,24 @@ public class ProductListingPage {
 		getElement(color_select).click();
 	}
 
+	public void setPriceSlider(int xOffsetLeft, int xOffsetRight) {
+
+		RemoteWebDriver driver = KeyWord.driver;
+		Actions actions = new Actions(driver);
+
+		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block:'center'});", leftSlider);
+
+		try {
+			Thread.sleep(500);
+		} catch (Exception e) {
+
+		}
+
+		actions.clickAndHold(leftSlider).moveByOffset(xOffsetLeft, 0).release().perform();
+
+		actions.clickAndHold(rightSlider).moveByOffset(xOffsetRight, 0).release().perform();
+	}
+
 	public boolean isDiscountFilterDisplayed() {
 		return getElement(discount).isDisplayed();
 	}
@@ -298,9 +352,14 @@ public class ProductListingPage {
 		return getElement(discount_list).isDisplayed();
 	}
 
+	// helper to build discount option locator at runtime
+	private By discountOptionLocator(String discountText) {
+		return By.xpath(
+				"//div[@class='vertical-filters-filters']//label[contains(normalize-space(.),'" + discountText + "')]");
+	}
+
 	public void selectDiscount(String selectdiscount) {
-		By discount_option = By
-				.xpath("//div[@class='vertical-filters-filters']//label[contains(text(),'" + selectdiscount + "')]");
+		By discount_option = discountOptionLocator(selectdiscount);
 		getElement(discount_option).click();
 	}
 
@@ -375,25 +434,27 @@ public class ProductListingPage {
 		getElement(sort).click();
 	}
 
+	// helper to build sort option locator at runtime
+	private By sortOptionLocator(String sortOptionText) {
+		return By.xpath("//label[contains(normalize-space(.),'" + sortOptionText + "')]");
+	}
 
-	
-	  public void selectSortOption(String sortOption) {
-	  
-	  WaitFor.waitForElementToBeVisible(sort_list); 
-	  WebElement element =getElement(sort_list); 
-	  JavascriptExecutor js = (JavascriptExecutor) driver;
-	  js.executeScript("arguments[0].scrollIntoView({block:'center'});", element);
-	  WaitFor.waitForElementToBeClickable(element); 
-	  try { 
-		  element.click(); 
-	  } catch(Exception e) { 
-		  
-	  } 
-	  js.executeScript("arguments[0].click();", element);
-	  
-	  }
-	 
-	
+	public void selectSortOption(String sortOption) {
+		By option = sortOptionLocator(sortOption);
+		WaitFor.waitForElementToBeVisible(option);
+		WebElement element = getElement(option);
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+		js.executeScript("arguments[0].scrollIntoView({block:'center'});", element);
+		// ensure clickable then click
+		WaitFor.waitForElementToBeClickable(option);
+		try {
+			element.click();
+		} catch (Exception e) {
+			// fallback to JS click
+		}
+		js.executeScript("arguments[0].click();", element);
+	}
+
 	public String getProductCountTextAfterApplyingFilter() {
 		return getElement(title_count).getText();
 	}
@@ -448,8 +509,6 @@ public class ProductListingPage {
 		product.click();
 	}
 
-	
-
 	public void searchAgeGroup(String ageGroup) {
 		selectAge(ageGroup);
 
@@ -461,10 +520,12 @@ public class ProductListingPage {
 	}
 
 	public boolean isProductDetailPageLoaded() {
-		// return true only when the URL indicates a product detail or product elements are visible
+		// return true only when the URL indicates a product detail or product elements
+		// are visible
 		try {
 			String url = KeyWord.getCurrentUrl();
-			if (url != null && url.toLowerCase().contains("/product/")) return true;
+			if (url != null && url.toLowerCase().contains("/product/"))
+				return true;
 			// fallback: if product page has product cards it is not a detail page
 			return driver.findElements(products).size() > 0 ? false : true;
 		} catch (Exception e) {
@@ -474,14 +535,48 @@ public class ProductListingPage {
 
 	public boolean isNoResults() {
 		try {
-			// consider no results when product list is empty or a no-results element exists
-			if (driver.findElements(products).size() == 0) return true;
-			// common selector for 'no results' message on site
-			List<WebElement> noResults = driver.findElements(By.xpath("//*[contains(text(),'No results') or contains(text(),'No Products') or contains(text(),'Sorry, we couldn')]"));
+			
+			if (driver.findElements(products).size() == 0)
+				return true;
+			
+			List<WebElement> noResults = driver.findElements(By.xpath(
+					"//*[contains(text(),'No results') or contains(text(),'No Products') or contains(text(),'Sorry, we couldn')]"));
 			return noResults.size() > 0;
 		} catch (Exception e) {
 			return false;
 		}
+	}
+
+	public boolean isCategoryFilterApplied(String category) {
+		List<WebElement> filters = driver.findElements(By.xpath("//div[contains(@class,'appliedFilters')]//span"));
+		for (WebElement filter : filters) {
+			if (filter.getText().toLowerCase().contains(category.toLowerCase())) {
+				return true;
+			}
+		}
+		return false;
+
+	}
+
+	public List<Integer> getAllProductPrices() {
+
+		List<WebElement> priceElements = driver
+				.findElements(By.xpath("//div[contains(@class,'product')]//span[contains(text(),'₹')]"));
+
+		List<Integer> prices = new ArrayList<>();
+
+		for (WebElement el : priceElements) {
+			String priceText = el.getText(); // Example: "₹1,299"
+			priceText = priceText.replaceAll("[^0-9]", ""); // remove ₹ and commas
+			prices.add(Integer.parseInt(priceText));
+		}
+
+		return prices;
+	}
+
+	public String getCurrentUrl() {
+		// TODO Auto-generated method stub
+		return driver.getCurrentUrl();
 	}
 
 }

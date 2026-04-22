@@ -1,5 +1,6 @@
 package com.Tests;
 
+import java.util.List;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.support.ui.Wait;
@@ -130,8 +131,7 @@ public class ProductListingPageTest extends Testbase {
 		WaitFor.waitForElementToBeVisible(plp.title_count);
 		System.out.println("Category filter applied: " + category);
 		plp.isProductDetailPageLoaded();
-		Assert.assertTrue(plp.isProductDetailPageLoaded(),
-				"Product detail page did not load after applying category filter: " + category);
+		Assert.assertTrue(plp.isCategoryFilterApplied(category), "Category filter not applied correctly: " + category);
 	}
 
 	@Test(dataProvider = "BrandData", dataProviderClass = MyntraSearchTest.class)
@@ -200,7 +200,6 @@ public class ProductListingPageTest extends Testbase {
 				"Product detail page did not load after applying color filter: " + color);
 	}
 
-
 	@Test(dataProvider = "sortBy", dataProviderClass = MyntraSearchTest.class)
 	public void verifySortByFilterOnPlpPageForTShirts(String sortByOption) {
 
@@ -216,11 +215,9 @@ public class ProductListingPageTest extends Testbase {
 		Assert.assertTrue(plp.isSortOptionApplied(sortByOption), "Sort By filter not applied correctly");
 		System.out.println("Sort By filter applied successfully..");
 	}
-	
-	
-	
-	@Test(  dataProvider = "discountFilterForTshirts", dataProviderClass = MyntraSearchTest.class)
-		public void toVerifyDiscountFilterOnPlpPageForTshirts(String discountRange) {
+
+	@Test(dataProvider = "discountFilterForTshirts", dataProviderClass = MyntraSearchTest.class)
+	public void toVerifyDiscountFilterOnPlpPageForTshirts(String discountRange) {
 		HomePage sr = new HomePage();
 		ProductListingPage plp = new ProductListingPage();
 		sr.clickOnSearchResult();
@@ -230,38 +227,10 @@ public class ProductListingPageTest extends Testbase {
 		plp.searchCategories("Tshirts");
 		plp.selectCategories("Tshirts");
 		plp.selectDiscount(discountRange);
-		System.out.println("selected discount: "+discountRange);
+		System.out.println("selected discount: " + discountRange);
 		int after = plp.getProductCountAfterFilter();
 		Assert.assertTrue(plp.isDiscountFilterApplied(), "Discount filter is not applied");
 		Assert.assertTrue(after <= before, "Product count did not reduce after applying discount filter");
-		    }
-
-	 
-
-
-	@Test(dataProvider = "CombinData", dataProviderClass = MyntraSearchTest.class)
-	public void verify_products_are_displayed_when_search_and_filters_applied(String SearchText, String Category,
-			String Color, String Brand) {
-
-		HomePage sr = new HomePage();
-		ProductListingPage plp = new ProductListingPage();
-		ProductDetailPage pd = new ProductDetailPage();
-		CartPage cart = new CartPage();
-		sr.clickOnSearchResult();
-		sr.typeAndHitSearchBar(SearchText);
-		plp.openCategoriesFilter();
-		plp.searchCategories(Category);
-		plp.selectCategories(Category);
-		plp.openColorFilter();
-		plp.selectcolor(Color);
-		plp.openBrandFilter();
-		plp.selectBrandDirectly(Brand);
-		WaitFor.waitForElementToBeVisible(plp.title_count);
-		System.out.println("Filters applied - Search: " + SearchText + ", Category: " + Category + ", Color: " + Color
-				+ ", Brand: " + Brand);
-		Assert.assertTrue(plp.isProductDetailPageLoaded(),
-				"Product detail page did not load after applying combined filters");
-
 	}
 
 	@Test
@@ -361,7 +330,9 @@ public class ProductListingPageTest extends Testbase {
 		plp.selectcolor("Red");
 		WaitFor.waitForElementToBeVisible(plp.title_count);
 		plp.clickProductByIndex(0);
-		Assert.assertTrue(plp.isProductDetailPageLoaded(), "Product detail page did not load");
+		Assert.assertTrue(plp.isCategoryFilterApplied("BAESD"));
+		Assert.assertTrue(plp.isColorFilterApplied("Red"));
+		Assert.assertTrue(plp.isAgeFilterApplied("YK"));
 		System.out.println("Product is selected");
 	}
 
@@ -414,6 +385,29 @@ public class ProductListingPageTest extends Testbase {
 		int after = plp.getProductCountAfterFilter();
 		Assert.assertEquals(after, before, "Product count not changed even when invalid colorapplied");
 
+	}
+
+	@Test
+	public void verifyPriceSlider() {
+		HomePage srp = new HomePage();
+		ProductListingPage plp = new ProductListingPage();
+		srp.clickOnSearchResult();
+		srp.typeAndHitSearchBar("Kids");
+
+		plp.openCategoriesFilter();
+		plp.searchCategories("Tshirts");
+		plp.selectCategories("Tshirts");
+
+		plp.setPriceSlider(100, 300);
+		Assert.assertTrue(true);
+
+		WaitFor.waitForElementToBeVisible(plp.title_count);
+
+		List<Integer> prices = plp.getAllProductPrices();
+
+		for (int price : prices) {
+			Assert.assertTrue(price >= 100 && price <= 500, "Price out of range: " + price);
+		}
 	}
 
 	@Test

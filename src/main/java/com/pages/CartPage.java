@@ -70,7 +70,7 @@ public class CartPage {
 	WebElement productSize;
 	@FindBy(css = "div.itemComponents-base-quantity")
 	WebElement productQuantity;
-	@FindBy(xpath = "//h1[contains(text(),'Checkout')]") // adjust locator
+	@FindBy(xpath = "//h1[contains(text(),'Checkout')]") 
 	WebElement checkoutPageTitle;
 	@FindBy(xpath = "//div[text()=\"ADD GIFT PACKAGE\"]")
 	WebElement addGiftPackage;
