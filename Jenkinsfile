@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-               bat 'C:/Windows/System32/cmd.exe /c mvn clean install'
+              bat '"C:\\Windows\\System32\\cmd.exe" /c "C:\\ProgramData\\Jenkins\\.jenkins\\tools\\hudson.tasks.Maven_MavenInstallation\\Maven3\\bin\\mvn.cmd clean install"'
 
             }
         }
