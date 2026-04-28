@@ -8,13 +8,13 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                bat 'mvn clean install'
+                bat 'C:/Windows/System32/cmd.exe /c mvn clean install'
             }
         }
 
         stage('Test') {
             steps {
-                bat 'mvn test'
+                bat 'C:/Windows/System32/cmd.exe /c mvn test'
             }
         }
     }
