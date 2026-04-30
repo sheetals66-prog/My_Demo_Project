@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        PATH = "C:\\Windows\\System32;${env.PATH}"
+        PATH = "C:\Program Files\Jenkins\jenkins.exe"
     }
     stages {
         stage('Build') {
