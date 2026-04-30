@@ -20,6 +20,7 @@ import static com.testbase.KeyWord.*;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 public class ProductListingPage {
 
@@ -59,17 +60,12 @@ public class ProductListingPage {
 
 	By discount = By.xpath("//span[text()='Discount Range']");
 	By discount_list = By.xpath("//label[@class=\"common-customRadio vertical-filters-label\"]");
-	// dynamic discount option should be built at runtime - removed the incorrect
-	// static field
 
 	By agefilter = By.xpath("//h4[text()='Age']");
 
 	By bundles = By.xpath("//label[contains(text(),'Bundles')]");
-	// bundles option should be built at runtime - removed incorrect static field
 
 	By countryOfOrigin = By.xpath("//h4[contains(text(),'Country of Origin')]");
-	// countryOfOrigin option should be built at runtime - removed incorrect static
-	// field
 
 	By size = By.xpath("//h4[text()=\"Size\"]");
 
@@ -86,11 +82,15 @@ public class ProductListingPage {
 
 	By clear_all = By.xpath("//span[text()=\"CLEAR ALL\"]");
 
-	public void loadPage() {
-		getUrl(pageLoad);
+	public boolean isPageLoaded() {
+		return driver.getCurrentUrl().contains("kids") && driver.getTitle().toLowerCase().contains("kids");
 	}
 
-	public boolean isKidsPageDisplayed() {
+	public String getPlpUrl() {
+		return KeyWord.driver.getCurrentUrl();
+	}
+
+	public boolean getPlpBreadcrum() {
 		return getElement(breadcrum).isDisplayed();
 	}
 
@@ -217,11 +217,6 @@ public class ProductListingPage {
 		return getElement(brand).isDisplayed();
 	}
 
-	/*
-	 * public void openBrandFilter() {
-	 * WaitFor.waitForElementToBeClickable(brand_searchbar);
-	 * getElement(brand_searchbar).click(); }
-	 */
 	public void openBrandFilter() {
 
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
@@ -245,44 +240,33 @@ public class ProductListingPage {
 
 	public void searchBrand(String brandName) {
 
-		// Open Brand filter
 		By brandFilter = By.xpath("//span[normalize-space()='Brand']");
 		WaitFor.waitForElementToBeLocated(brandFilter);
 		driver.findElement(brandFilter).click();
 
-		// Wait for search box
 		By searchBox = By.xpath("//input[@placeholder='Search for brand']");
 		WaitFor.waitForElementToBeVisible(searchBox);
 
-		// Enter brand
 		driver.findElement(searchBox).sendKeys(brandName);
 	}
 
-	/*
-	 * public void searchBrand(String brandname) { openBrandFilter();
-	 * WaitFor.waitForPresence(brandInput);
-	 * WaitFor.waitForElementToBeVisible(brandInput); WebElement input =
-	 * driver.findElement(brandInput); ((JavascriptExecutor)
-	 * driver).executeScript("arguments[0].scrollIntoView({block:'center'});",
-	 * input); input.clear(); input.sendKeys(brandname); }
-	 */
 	public void selectBrandDirectly(String brandname) {
 
-		By brandOption = By.xpath("//label[contains(.,'" + brandname + "')]");
+	    By brandOption = By.xpath("//label[contains(.,'" + brandname + "')]");
+	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+	    List<WebElement> brands = driver.findElements(brandOption);
 
-		WebElement element = getElement(brandOption);
+	    if (brands.size() == 0) {
+	        System.out.println("Brand not found: " + brandname);
+	        return; 
+	    }
+	    WebElement element = wait.until(ExpectedConditions.elementToBeClickable(brandOption));
 
-		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block:'center'});", element);
+	    ((JavascriptExecutor) driver).executeScript(
+	        "arguments[0].scrollIntoView({block:'center'});", element);
 
-		wait.until(ExpectedConditions.elementToBeClickable(element));
-
-		try {
-			element.click();
-		} catch (Exception e) {
-			((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
-		}
+	    element.click();
 	}
 
 	public boolean isPriceFilterSectionDisplayed() {
@@ -352,7 +336,6 @@ public class ProductListingPage {
 		return getElement(discount_list).isDisplayed();
 	}
 
-	// helper to build discount option locator at runtime
 	private By discountOptionLocator(String discountText) {
 		return By.xpath(
 				"//div[@class='vertical-filters-filters']//label[contains(normalize-space(.),'" + discountText + "')]");
@@ -407,9 +390,9 @@ public class ProductListingPage {
 		}
 	}
 
-	public void selectSize(String sizeValue) {
+	public void selectSize(String i) {
 
-		String mappedSize = mapSize(sizeValue);
+		String mappedSize = mapSize(i);
 		By select_size = By.xpath("//label[contains(.,'" + mappedSize + "')]");
 		WaitFor.waitForElementToBeVisible(select_size);
 		WebElement element = getElement(select_size);
@@ -428,31 +411,27 @@ public class ProductListingPage {
 		return getElement(sort).isDisplayed();
 	}
 
-	public void openSortOptions() {
-		WaitFor.waitForElementToBeVisible(sort);
-		WaitFor.waitForElementToBeClickable(sort);
-		getElement(sort).click();
-	}
+	/** opens the dropdown and select by entering text **/
+	public void sortBy(String optionText) {
+		WaitFor.waitForElementToBeVisible(sortButton);
+		WaitFor.waitForElementToBeClickable(sortButton);
+		KeyWord.clickOn(sortButton);
+		for (WebElement option : sortOptions) {
+			if (option.getText().trim().equalsIgnoreCase(optionText)) {
+				KeyWord.clickOn(option);
+				return;
+			}
 
-	// helper to build sort option locator at runtime
-	private By sortOptionLocator(String sortOptionText) {
-		return By.xpath("//label[contains(normalize-space(.),'" + sortOptionText + "')]");
-	}
-
-	public void selectSortOption(String sortOption) {
-		By option = sortOptionLocator(sortOption);
-		WaitFor.waitForElementToBeVisible(option);
-		WebElement element = getElement(option);
-		JavascriptExecutor js = (JavascriptExecutor) driver;
-		js.executeScript("arguments[0].scrollIntoView({block:'center'});", element);
-		// ensure clickable then click
-		WaitFor.waitForElementToBeClickable(option);
-		try {
-			element.click();
-		} catch (Exception e) {
-			// fallback to JS click
 		}
-		js.executeScript("arguments[0].click();", element);
+		throw new RuntimeException("Sort option not found: " + optionText);
+
+	}
+
+	public String getSelectedSortOption() {
+
+		WaitFor.waitForElementToBeVisible(sortButton);
+
+		return sortButton.getText().replace("Sort by :", "").trim();
 	}
 
 	public String getProductCountTextAfterApplyingFilter() {
@@ -483,7 +462,7 @@ public class ProductListingPage {
 		return driver.getCurrentUrl().toLowerCase().contains(color.toLowerCase());
 	}
 
-	public boolean isDiscountFilterApplied() {
+	public boolean isDiscountFilterApplied(String string) {
 		return driver.getCurrentUrl().toLowerCase().contains("discount");
 	}
 
@@ -499,12 +478,35 @@ public class ProductListingPage {
 		return driver.getCurrentUrl().toLowerCase().contains(sortOption.toLowerCase());
 	}
 
+	/*
+	 * public void clickProductByIndex(int index) { List<WebElement> products =
+	 * KeyWord.driver.findElements(By.xpath("//li[@class='product-base']"));
+	 * WebElement product = products.get(index); JavascriptExecutor js =
+	 * (JavascriptExecutor) KeyWord.driver;
+	 * js.executeScript("arguments[0].scrollIntoView(true);", product);
+	 * WebDriverWait wait = new WebDriverWait(KeyWord.driver,
+	 * Duration.ofSeconds(10));
+	 * wait.until(ExpectedConditions.elementToBeClickable(product));
+	 * product.click(); }
+	 */
 	public void clickProductByIndex(int index) {
-		List<WebElement> products = KeyWord.driver.findElements(By.xpath("//li[@class='product-base']"));
-		WebElement product = products.get(index);
-		JavascriptExecutor js = (JavascriptExecutor) KeyWord.driver;
-		js.executeScript("arguments[0].scrollIntoView(true);", product);
+
+		By productsLocator = By.xpath("//li[@class='product-base']");
 		WebDriverWait wait = new WebDriverWait(KeyWord.driver, Duration.ofSeconds(10));
+
+		wait.until(driver -> driver.findElements(productsLocator).size() > index);
+
+		// FIRST FETCH
+		WebElement product = KeyWord.driver.findElements(productsLocator).get(index);
+
+		((JavascriptExecutor) KeyWord.driver).executeScript("arguments[0].scrollIntoView(true);", product);
+
+		// WAIT AGAIN AFTER SCROLL (DOM refresh safe)
+		wait.until(driver -> driver.findElements(productsLocator).size() > index);
+
+		// SECOND FETCH (IMPORTANT)
+		product = KeyWord.driver.findElements(productsLocator).get(index);
+
 		wait.until(ExpectedConditions.elementToBeClickable(product));
 		product.click();
 	}
@@ -533,29 +535,33 @@ public class ProductListingPage {
 		}
 	}
 
-	public boolean isNoResults() {
-		try {
-			
-			if (driver.findElements(products).size() == 0)
-				return true;
-			
-			List<WebElement> noResults = driver.findElements(By.xpath(
-					"//*[contains(text(),'No results') or contains(text(),'No Products') or contains(text(),'Sorry, we couldn')]"));
-			return noResults.size() > 0;
-		} catch (Exception e) {
-			return false;
-		}
+	public boolean isNoResults() throws TimeoutException {
+
+		By products = By.xpath("//li[@class='product-base']");
+		By noResults = By.xpath(
+				"//*[contains(text(),'No results') or contains(text(),'No Products') or contains(text(),'Sorry')]");
+
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+
+		wait.until(driver -> driver.findElements(products).size() > 0 || driver.findElements(noResults).size() > 0);
+
+		return driver.findElements(noResults).size() > 0;
 	}
 
 	public boolean isCategoryFilterApplied(String category) {
-		List<WebElement> filters = driver.findElements(By.xpath("//div[contains(@class,'appliedFilters')]//span"));
-		for (WebElement filter : filters) {
-			if (filter.getText().toLowerCase().contains(category.toLowerCase())) {
-				return true;
+		try {
+			List<WebElement> appliedFilters = driver
+					.findElements(By.xpath("//div[contains(@class,'appliedFilters')]//span"));
+
+			for (WebElement filter : appliedFilters) {
+				if (filter.getText().trim().equalsIgnoreCase(category.trim())) {
+					return true;
+				}
 			}
+		} catch (Exception e) {
+			System.out.println("Error in isCategoryFilterApplied: " + e.getMessage());
 		}
 		return false;
-
 	}
 
 	public List<Integer> getAllProductPrices() {

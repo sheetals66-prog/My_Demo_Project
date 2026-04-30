@@ -3,7 +3,7 @@ package com.pages;
 import java.time.Duration;
 import java.util.List;
 import java.util.Random;
-
+import static com.testbase.KeyWord.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
@@ -37,10 +37,9 @@ public class ProductDetailPage {
 	@FindBy(css = "span.pdp-mrp")
 	WebElement originalPrice;
 
-	@FindBy(css = "div.size-buttons-size-buttons button")
+	@FindBy(xpath = "//div[@class=\"size-buttons-tipAndBtnContainer\"]")
 	List<WebElement> sizes;
 
-	
 	@FindBy(css = "span.pdp-discount")
 	WebElement discount;
 
@@ -54,7 +53,7 @@ public class ProductDetailPage {
 	WebElement wishList;
 
 	@FindBy(css = "div.pdp-add-to-bag")
-	WebElement addToBag;
+	public WebElement addToBag;
 
 	@FindBy(xpath = "//span[text()='GO TO BAG']")
 	WebElement goToBag;
@@ -70,10 +69,10 @@ public class ProductDetailPage {
 
 	@FindBy(css = "li.pincode-serviceabilityItem")
 	List<WebElement> pincodeMsg;
-	
-	@FindBy(xpath="//p[contains(text(),'Please enter PIN code to check delivery time & Pay on Delivery Availability')]")
-    WebElement enterValidPincodeMsg;
-	
+
+	@FindBy(xpath = "//p[contains(text(),'Please enter PIN code to check delivery time & Pay on Delivery Availability')]")
+	WebElement enterValidPincodeMsg;
+
 	@FindBy(css = "p.pincode-error")
 	WebElement invalidPincodeMsg;
 
@@ -94,6 +93,12 @@ public class ProductDetailPage {
 
 	@FindBy(css = ".image-image")
 	WebElement popupCloseBtn;
+	@FindBy(css = ".pdp-add-to-wishlist")
+	WebElement WishListButton;
+
+	public boolean isWishListButtonIsPresent() {
+		return KeyWord.isDisplayed(WishListButton);
+	}
 
 	public String getProductTitle() {
 		return productTitle.getText();
@@ -135,10 +140,23 @@ public class ProductDetailPage {
 	}
 
 	public void clickAddToBag() {
-		closePopupIfPresent();
+//		closePopupIfPresent();
+//	    try {
+//	        WaitFor.waitForElementToBeClickable(addToBag);
+//	        addToBag.click();
+//
+//	    } catch (Exception e) {
+//	        System.out.println("Retry clicking Add to Bag");
+//
+//	        // fallback click using JS
+//	        JavascriptExecutor js = (JavascriptExecutor) KeyWord. driver;
+//	        js.executeScript("arguments[0].click();", addToBag);
+//	    }
+
+		WaitFor.waitForElementToBeVisible(addToBag);
 		WaitFor.waitForElementToBeClickable(addToBag);
 		addToBag.click();
-
+		waitForSeconds(2000);
 	}
 
 	public void clickGoToBag() {
@@ -157,78 +175,58 @@ public class ProductDetailPage {
 	}
 
 	public String generateRandomPin() {
-	    Random rand = new Random();
-	    int pin = 100000 + rand.nextInt(900000);
-	    return String.valueOf(pin);
+		Random rand = new Random();
+		int pin = 100000 + rand.nextInt(900000);
+		return String.valueOf(pin);
 	}
-	
+
 	public void enterPincode(String code) {
-		WaitFor.waitForElementToBeVisible(checkButton);
+
+		WaitFor.waitForElementToBeVisible(pinCode);
+
 		try {
 			pinCode.clear();
+			KeyWord.waitForSeconds(1000);
 		} catch (Exception e) {
-			// ignore
+			KeyWord.waitForSeconds(1000);
 		}
+
 		pinCode.sendKeys(code);
+
+		WaitFor.waitForElementToBeClickable(checkButton);
 		checkButton.click();
+		WaitFor.waitForElements(pincodeMsg);
+
 		try {
 			if (changePinCodeBtn.isDisplayed()) {
-				WaitFor.waitForElementToBeClickable(changePinCodeBtn);
-				pinCode.sendKeys(code);
-				checkButton.click();
-			} else {
-				WaitFor.waitForElements(pincodeMsg);
+				System.out.println("Pincode applied, change option available");
 			}
 		} catch (Exception e) {
-			// fallback wait
-			WaitFor.waitForElements(pincodeMsg);
+
 		}
 	}
 
-	public String getPincodeErrorMsg() {
-		try {
-			if (enterValidPincodeMsg != null && enterValidPincodeMsg.isDisplayed()) {
-				return enterValidPincodeMsg.getText();
-			}
-		} catch (Exception e) {
-			// ignore
-		}
-		// if specific element not found, look into pincode messages list
-		try {
-			WaitFor.waitForElements(pincodeMsg);
-			for (WebElement el : pincodeMsg) {
-				String text = el.getText();
-				if (!text.trim().isEmpty()) {
-					return text;
-				}
-			}
-		} catch (Exception e) {
-			// ignore
-		}
-		return "";
-		
-	}
 	public String getInvalidPincodeToast() {
-	    WebDriverWait wait = new WebDriverWait(KeyWord.driver, Duration.ofSeconds(10));
+		WebDriverWait wait = new WebDriverWait(KeyWord.driver, Duration.ofSeconds(10));
 
-	    try {
-	        WebElement toast = wait.until(ExpectedConditions.visibilityOfElementLocated(
-	            By.xpath("//*[contains(text(),'valid pincode')]")
-	        ));
+		try {
+			WebElement toast = wait.until(
+					ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(text(),'valid pincode')]")));
 
-	        return toast.getText();
-	    } catch (Exception e) {
-	        // fallback to invalidPincodeMsg element
-	        try {
-	            if (invalidPincodeMsg != null && invalidPincodeMsg.isDisplayed()) {
-	                return invalidPincodeMsg.getText();
-	            }
-	        } catch (Exception ex) {
-	            // ignore
-	        }
-	        return "";
-	    }
+			return toast.getText();
+		} catch (Exception e) {
+
+			try {
+				if (invalidPincodeMsg != null && invalidPincodeMsg.isDisplayed()) {
+					return invalidPincodeMsg.getText();
+				}
+			} catch (Exception ex) {
+
+			}
+			return "";
+		}
 	}
+
 	public String getPinCodeMsg() {
 		WaitFor.waitForElements(pincodeMsg); // imp
 		for (WebElement el : pincodeMsg) {
@@ -254,6 +252,7 @@ public class ProductDetailPage {
 	}
 
 	public boolean isProductPageLoaded() {
+		WaitFor.waitForElementToBeVisible(productName);
 		return productName.isDisplayed();
 	}
 
@@ -274,61 +273,21 @@ public class ProductDetailPage {
 		return KeyWord.getCurrentUrl().contains("login");
 	}
 
-	public boolean selectSize() {
-		for (int i = 0; i < sizes.size(); i++) {
+	public String selectSize(int index) {
+		try {
+			WaitFor.waitForElementToBeClickable(sizes.get(index));
 
-			try {
-				WebElement size = sizes.get(i);
+			String selectedSize = sizes.get(index).getText(); // capture text
+			sizes.get(index).click();
 
-				if (size.isDisplayed() && size.isEnabled()) {
+			Thread.sleep(1000);
 
-					((JavascriptExecutor) KeyWord.driver).executeScript("arguments[0].scrollIntoView(true);", size);
+			return selectedSize;
 
-					WaitFor.waitForElementToBeClickable(size);
-					size.click();
-
-					try {
-						WaitFor.until(ExpectedConditions.attributeContains(size, "class", "selected"));
-					} catch (Exception e) {
-
-					}
-
-					if (size.getAttribute("class").contains("selected")) {
-						System.out.println("Size selected: " + size.getText());
-						return true;
-					}
-				}
-
-			} catch (StaleElementReferenceException e) {
-
-				System.out.println("Stale element, retrying...");
-
-				try {
-					WebElement size = sizes.get(i);
-
-					((JavascriptExecutor) KeyWord.driver).executeScript("arguments[0].scrollIntoView(true);", size);
-
-					((JavascriptExecutor) KeyWord.driver).executeScript("arguments[0].click();", size);
-
-					return true;
-
-				} catch (Exception ex) {
-
-				}
-
-			} catch (Exception e) {
-
-				try {
-					WebElement size = sizes.get(i);
-					((JavascriptExecutor) KeyWord.driver).executeScript("arguments[0].click();", size);
-					return true;
-				} catch (Exception ex) {
-
-				}
-			}
+		} catch (Exception e) {
+			System.out.println("No size available");
+			return null;
 		}
-
-		return false;
 	}
 
 	public boolean isGoToBagDisplayed() {
@@ -340,7 +299,6 @@ public class ProductDetailPage {
 		}
 	}
 
-	// New helper: is add to bag clickable
 	public boolean isAddToBagClickable() {
 		try {
 			WaitFor.waitForElementToBeClickable(addToBag);
@@ -350,17 +308,29 @@ public class ProductDetailPage {
 		}
 	}
 
-	// New helper: check wishlist active state by checking class or aria attribute
 	public boolean isWishlistActiveStateSelected() {
 		try {
-			if (wishList == null) return false;
+			if (wishList == null)
+				return false;
 			String cls = wishList.getAttribute("class");
-			if (cls != null && cls.toLowerCase().contains("active")) return true;
+			if (cls != null && cls.toLowerCase().contains("active"))
+				return true;
 			String aria = wishList.getAttribute("aria-pressed");
 			return "true".equalsIgnoreCase(aria);
 		} catch (Exception e) {
 			return false;
 		}
+	}
+
+	public boolean isSizeAvailable() {
+		return sizes.size() > 0;
+	}
+
+	public String getErrorMsg() {
+		// TODO Auto-generated method stub
+		WaitFor.waitForElementToBeVisible(errormsg);
+		return errormsg.getText();
+
 	}
 
 }

@@ -12,7 +12,6 @@ public class Mylistener implements ITestListener{
 
 	@Override
 	public void onTestFailure(ITestResult result) {
-		// TODO Auto-generated method stub
 		ScreenShot.getScreenShot(result.getName());
 		
 	

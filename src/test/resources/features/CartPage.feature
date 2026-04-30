@@ -1,50 +1,41 @@
-Feature: Cart Functionality  of Validation
+Feature: CartPage Functionality
 
   Background:
-    When User searches for "Tshirts"
-    And products should be visible on product listing page
-    When User selects the product at index 1 from listing
-    Then Product detail page should be displayed
-    And User selects size "M"
-    When User clicks add to bag
+    Given User searches for  product "kids"
+    And User selects a product from PLP
+    And User adds product to bag and navigates to cart page
 
-  Scenario: Verify product is added to cart
-    Then product should be added to cart
-    And cart count should be greater than 0
+  Scenario: Verify Place Order button is visible
+    Then User should see Place Order button
 
-  Scenario: Verify product details in cart
-    Then product name should be visible in cart
-    And product price should be visible in cart
-    And product size and quantity should be visible
+  Scenario: Verify Place Order button is clickable
+    When User clicks on Place Order button
+    Then User should be navigated to checkout page
 
-  Scenario: Verify place order button
-    Then place order button should be visible
-    And place order button should be enabled
+  Scenario: Verify price details are displayed
+    Then User should see price details on cart page
 
-  Scenario: Verify coupon functionality
-    When User clicks coupon button
-    And User enters coupon "TEST123"
-    And User clicks apply coupon
-    Then coupon should be applied or error displayed
+  Scenario: Verify user can remove product from cart
+    When User removes the product
+    Then Product should be removed from cart
 
-  Scenario: Verify remove product from cart
-    When User selects product in cart
-    And User clicks remove button
-    And User confirms remove popup
-    Then cart should be empty or updated
+  Scenario: Verify user can move product to wishlist
+    When User moves product to wishlist
+    Then Product should be removed from cart
 
-  Scenario: Verify move to wishlist
-    When User clicks move to wishlist
-    And User confirms move to wishlist popup
-    Then product should be removed from cart
+  Scenario: Verify cancel move to wishlist
+    When User cancels wishlist move
+    Then Product should remain in cart
 
-  Scenario: Verify pincode functionality
-    When User enters pincode in cart
-    Then delivery address or message should be displayed
+  Scenario: Verify coupon can be applied
+    When User applies coupon
+    Then Coupon should be applied successfully
 
-  Scenario: Verify max quantity warning
-    When User increases quantity to max limit
-    Then max quantity warning should be displayed
+  Scenario: Verify error when adding product without selecting size
+    Given User selects product without size
+    When User clicks Add to Bag
+    Then Error message should be displayed
 
-  Scenario: Verify empty cart message
-    Then empty cart message should be displayed (if no products)
+  Scenario: Verify invalid coupon code
+    When User enters invalid coupon "INVALID123"
+    Then Error message should be shown

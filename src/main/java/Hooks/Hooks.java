@@ -5,9 +5,12 @@ import org.apache.logging.log4j.Logger;
 
 import com.testbase.KeyWord;
 import com.utilities.ConfigReader;
+import com.utilities.ScreenShot;
 
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
+
 import static com.testbase.KeyWord.*;
 
 import java.io.IOException;
@@ -22,15 +25,20 @@ public class Hooks {
 		String url = ConfigReader.getProperties("url");
 		openBrowser(browser);
 		LOG.info("Browser is opened..!");
+		KeyWord.maximizeWindow();
 		getUrl(url);
 		LOG.info("url is launched..!");
+		
 	}
 
+	
 	@After
-	public void tearDown() {
-		// Call the static tearDown from KeyWord to avoid recursive call to this method
-		KeyWord.tearDown();
-		LOG.info("Driver is Quit successfully....!");
-	}
+	public void tearDown(Scenario scenario) {
 
+	    if (scenario.isFailed()) {
+	        ScreenShot.takeFullPageScreenshot(driver, scenario.getName());
+	    }
+
+	    driver.quit();
+	}
 }

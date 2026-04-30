@@ -1,6 +1,8 @@
 package com.Tests;
 
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -14,7 +16,7 @@ import com.testbase.Testbase;
 import com.utilities.WaitFor;
 
 public class HomePageTest extends Testbase {
-
+	private static final Logger log = LogManager.getLogger(HomePageTest.class);
 	@Test
 	public void verifySearchProductIsDisplayed() {
 		HomePage sr = new HomePage();
@@ -22,16 +24,14 @@ public class HomePageTest extends Testbase {
 		sr.clickOnSearchResult();
 		sr.typeAndHitSearchBar("kids");
 		Assert.assertTrue(plp.productsIsDisplayedBeforeApplyingFilters());
-		System.out.println("Products are Displayed..");
+		log.info("Products are Displayed..");
 	}
 
 	@Test(dataProvider = "SearchData", dataProviderClass = MyntraSearchTest.class)
-	public void toVerifySearchProduct(String searchText) throws InterruptedException {
-		System.out.println("Searching for: " + searchText);
+	public void toVerifySearchProduct(String searchText)  {
+		log.info("Searching for: " + searchText);
 		HomePage sr = new HomePage();
 		ProductListingPage plp = new ProductListingPage();
-		ProductDetailPage pd = new ProductDetailPage();
-		CartPage cart = new CartPage();
 		sr.clickOnSearchResult();
 		sr.typeAndHitSearchBar(searchText);
 		WaitFor.waitForElementToBeVisible(plp.title_count);
@@ -41,7 +41,7 @@ public class HomePageTest extends Testbase {
 
 	@Test(dataProvider = "invalidSearchData", dataProviderClass = MyntraSearchTest.class)
 	public void toVerifySearchProductWithInvalidData(String searchText) {
-		System.out.println("Searching for: " + searchText);
+		log.info("Searching for: " + searchText);
 		HomePage sr = new HomePage();
 		ProductListingPage plp = new ProductListingPage();
 		sr.clickOnSearchResult();
@@ -78,7 +78,6 @@ public class HomePageTest extends Testbase {
 	@Test
 	public void toverifyNoresultsDisplayWithoutNumericSearch() {
 		HomePage sr = new HomePage();
-		ProductListingPage plp = new ProductListingPage();
 		ProductDetailPage pd = new ProductDetailPage();
 		sr.clickOnSearchResult();
 		sr.typeAndHitSearchBar("123456");
@@ -101,7 +100,7 @@ public class HomePageTest extends Testbase {
 		sr.clickOnSearchResult();
 		sr.typeAndHitSearchBar("KIDS");
 		Assert.assertTrue(plp.productsIsDisplayedBeforeApplyingFilters());
-		System.out.println("Products are Displayed..");
+		log.info("Products are Displayed..");
 	}
 	@Test
 	public void toverifyNoresultsDisplayWithoutLeadingTrailingSpacesSearch() {
@@ -110,7 +109,7 @@ public class HomePageTest extends Testbase {
 		sr.clickOnSearchResult();
 		sr.typeAndHitSearchBar("   kids   ");
 		Assert.assertTrue(plp.productsIsDisplayedBeforeApplyingFilters());
-		System.out.println("Products are Displayed..");
+		log.info("Products are Displayed..");
 	}
 	
 	@Test

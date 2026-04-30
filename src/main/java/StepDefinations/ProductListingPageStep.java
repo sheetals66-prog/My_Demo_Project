@@ -1,101 +1,109 @@
 package StepDefinations;
 
-import static com.testbase.KeyWord.driver;
-
-import java.util.Locale.Category;
-import java.util.logging.LogManager;
-
-import org.openqa.selenium.manager.SeleniumManagerOutput.Log;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.testng.Assert;
 
 import com.pages.HomePage;
 import com.pages.ProductListingPage;
 import com.utilities.WaitFor;
 
-import Hooks.Hooks;
-import io.cucumber.core.logging.Logger;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
-
 public class ProductListingPageStep {
-//private static final Logger LOG = LogManager.getLogger(Hooks.class);
-	
-	HomePage srp = new HomePage();
+
+	private static final Logger log = LogManager.getLogger(ProductListingPageStep.class);
+
+	HomePage home = new HomePage();
 	ProductListingPage plp = new ProductListingPage();
 
 	@When("User searches for {string}")
-	public void user_searches_for(String product) {
-		srp.clickOnSearchResult();
-		srp.typeAndHitSearchBar(product);
+	public void userSearchesForProduct(String product) {
+		log.info("Searching product: {}", product);
+		home.clickOnSearchResult();
+		home.typeAndHitSearchBar(product);
 	}
 
 	@And("products should be visible on product listing page")
-	public void products_should_be_visible() {
+	public void verifyProductsVisible() {
+		log.info("Checking products visibility on PLP");
 		Assert.assertTrue(plp.productsIsDisplayedBeforeApplyingFilters(), "Products are not visible on PLP");
 	}
 
 	@Then("product count should be greater than 0")
-	public void product_count_should_be_greater_than_0() {
+	public void verifyProductCount() {
 		int count = plp.getProductCountBeforeFilter();
+		log.info("Product count: {}", count);
+
 		Assert.assertTrue(count > 0, "Product count is zero");
 	}
 
-	@And("user applies on category filter {string}")
-	public void user_applies_category_filter(String category) {
+	@And("user applies category filter {string}")
+	public void applyCategoryFilter(String category) {
+
+		log.info("Applying category filter: {}", category);
 
 		plp.openCategoriesFilter();
 		plp.searchCategories(category);
-
 		plp.selectCategories(category);
 
 		WaitFor.waitForElementToBeVisible(plp.title_count);
 	}
 
-	
-	@Then("User should see category filter {string} applied")
-	public void verify_category_filter(String category) {
-		boolean result = plp.isCategoryFilterApplied(category);
-		//LOG.info("colour filter applied successfully....!!!1" + result);
-		Assert.assertTrue(result, "Category filter NOT applied: " + category);
+	@Then("User should see  {string}  category filter applied in URL")
+	public void verifyCategoryFilter(String category) {
+		log.info("Category filter applied: " + category);
+		String ActualUrl = plp.getPlpUrl();
+		Assert.assertTrue(ActualUrl.toLowerCase().contains(category.toLowerCase()),
+				"URL does not contain the applied Category filter");
+		log.info("Category  filter applied successfully..");
+
 	}
-	
-	
+
 	@And("User applies colour filter {string}")
-	public void user_applies_colour_filter(String color) {
-
+	public void applyColorFilter(String colour) {
+		log.info("Applying category filter: {}", colour);
 		plp.openColorFilter();
-		plp.selectcolor(color);
-
+		plp.selectcolor(colour);
 		WaitFor.waitForElementToBeVisible(plp.title_count);
+		
 	}
 
-	@Then("User should see colour filter applied in URL")
-	public void verify_colour_in_url() {
-
-		String url = plp.getCurrentUrl();
-		Assert.assertTrue(url.contains("color"), "Color filter not applied in URL");
+	@Then("User should see {string} colour filter applied in URL")
+	public void verifyColorInUrl(String colour) {
+		log.info("Colour filter applied: " + colour);
+		String ActualUrl = plp.getPlpUrl();
+		Assert.assertTrue(ActualUrl.toLowerCase().contains(colour.toLowerCase()),
+				"URL does not contain the applied Colour filter");
+		log.info("Colour filter applied successfully..");
 	}
 
-	
 	@And("User applies discount filter {string}")
-	public void user_applies_discount_filter(String discount) {
-
+	public void applyDiscountFilter(String discount) {
+		log.info("Applying category filter: {}", discount);
 		plp.selectDiscount(discount);
-		WaitFor.waitForElementToBeVisible(plp.title_count);
+		log.info("selected discount: " + discount);
+		
 	}
 
-	@Then("User should see discount filter applied in URL")
-	public void verify_discount_in_url() {
-
-		String url = plp.getCurrentUrl();
-		Assert.assertTrue(url.contains("discount"), "Discount filter not applied in URL");
+	@Then("User should see {string} discount filter applied in URL")
+	public void verifyDiscountInUrl(String Discount) {
+		log.info("discount filter applied: " + Discount);
+		String ActualUrl = plp.getPlpUrl();
+		  String expectedValue = Discount.replaceAll("[^0-9]", "");
+		Assert.assertTrue(ActualUrl.contains(expectedValue),
+		        "Discount not applied correctly in URL: " + ActualUrl);
+		log.info("discount filter applied successfully..");
+		
+		
 	}
 
-	
 	@Then("Product listing page should be displayed")
-	public void product_listing_page_should_be_displayed() {
+	public void verifyProductListingPage() {
+
+		log.info("Verifying PLP page loaded");
 
 		Assert.assertTrue(plp.isProductDetailPageLoaded(), "PLP page not loaded");
 	}

@@ -1,14 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
-<suite name="Suite"  thread-count="1">
-<listeners>
-    <listener class-name="io.qameta.allure.testng.AllureTestNg"/>
-</listeners>
-  <test thread-count="1" name="Test">
+<suite name="Suite" parallel="tests" thread-count="5">
+ <listeners>
+    
+        <listener class-name="com.listener.Mylistener"/>
+    </listeners>
+
+
+
+  <test  name="AllTest">
   
     <classes> 
-     <class name="com.Tests.CartPageTest"/>
-      
+     <class name="com.Tests.HomePageTest"/>
+      <class name="com.Tests.ProductListingPageTest"/>
+       <class name="com.Tests.ProductDetailsTest"/>
+        <class name="com.Tests.CartPageTest"/>
+         <class name="com.Tests.PlaceOrderTest"/>
     </classes>
   </test> <!-- Test -->
+  
+ 
 </suite> <!-- Suite -->
+  
+
+
+

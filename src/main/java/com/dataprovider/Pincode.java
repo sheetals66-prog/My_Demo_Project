@@ -8,7 +8,7 @@ import com.utilities.ExcelReader;
 public class Pincode {
 	@DataProvider(name ="validPincode")
 	public Object[][] getExcelData() throws Exception {
-		return ExcelReader.readExcel(0);
+		return ExcelReader.readExcel(1);
 	
 	
 	}

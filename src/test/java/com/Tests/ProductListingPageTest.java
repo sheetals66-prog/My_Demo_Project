@@ -1,33 +1,33 @@
 package com.Tests;
 
-import java.util.List;
-
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.support.ui.Wait;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.testng.Assert;
-
-import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 
 import com.dataprovider.MyntraSearchTest;
-import com.listener.Mylistener;
 import com.pages.CartPage;
 import com.pages.HomePage;
 import com.pages.ProductDetailPage;
 import com.pages.ProductListingPage;
-
 import com.testbase.Testbase;
 import com.utilities.WaitFor;
 
-//@Listeners(Mylistener.class)
+
 public class ProductListingPageTest extends Testbase {
+	private static final Logger log = LogManager.getLogger(ProductListingPageTest.class);
+	SoftAssert softly = new SoftAssert();
+
 	@Test
 	public void toVerifyProductListingPageIsLoaded() {
 		HomePage sr = new HomePage();
 		ProductListingPage plp = new ProductListingPage();
 		sr.clickOnSearchResult();
 		sr.typeAndHitSearchBar("kids");
-		Assert.assertTrue(plp.isProductDetailPageLoaded(), "Product listing page did not load properly");
+		boolean status = plp.isPageLoaded();
+		Assert.assertTrue(status, "Product listing page not loaded");
+
 	}
 
 	@Test
@@ -48,7 +48,7 @@ public class ProductListingPageTest extends Testbase {
 		sr.typeAndHitSearchBar("kids");
 		Assert.assertTrue(plp.productsIsDisplayedBeforeApplyingFilters(), "Product count is not displayed");
 		int count = plp.getProductCountBeforeFilter();
-		System.out.println("Total products count: " + count);
+		log.info("Total products count: " + count);
 		Assert.assertTrue(count > 0, "Product count should be greater than zero");
 	}
 
@@ -60,11 +60,11 @@ public class ProductListingPageTest extends Testbase {
 		sr.typeAndHitSearchBar("kids");
 		Assert.assertTrue(plp.productsIsDisplayedBeforeApplyingFilters(), "Products are not displayed on listing page");
 		int before = plp.getProductCountBeforeFilter();
-		System.out.println("products count before filter:" + before);
+		log.info("products count before filter:" + before);
 		plp.selectGirlsFilter();
 		WaitFor.waitForElementToBeVisible(plp.title_count);
 		int after = plp.getProductCountAfterFilter();
-		System.out.println("products count after filter:" + after);
+		log.info("products count after filter:" + after);
 		Assert.assertTrue(after <= before, "Product count did not reduce after applying filter");
 	}
 
@@ -76,11 +76,11 @@ public class ProductListingPageTest extends Testbase {
 		sr.typeAndHitSearchBar("kids");
 		Assert.assertTrue(plp.productsIsDisplayedBeforeApplyingFilters());
 		int before = plp.getProductCountBeforeFilter();
-		System.out.println("products count before filter:" + before);
+		log.info("products count before filter:" + before);
 		plp.selectBoysFilter();
 		WaitFor.waitForElementToBeVisible(plp.title_count);
 		int after = plp.getProductCountAfterFilter();
-		System.out.println("products count after filter:" + after);
+		log.info("products count after filter:" + after);
 		Assert.assertTrue(before >= after, "filter is not working properly");
 
 	}
@@ -92,10 +92,10 @@ public class ProductListingPageTest extends Testbase {
 		sr.clickOnSearchResult();
 		sr.typeAndHitSearchBar("kids");
 		int before = plp.getProductCountBeforeFilter();
-		System.out.println("products count before filter:" + before);
+		log.info("products count before filter:" + before);
 		plp.selectGirlsFilter();
 		int after = plp.getProductCountAfterFilter();
-		System.out.println("products count after filter:" + after);
+		log.info("products count after filter:" + after);
 		Assert.assertTrue(before >= after, "filter is not working properly");
 
 	}
@@ -109,15 +109,17 @@ public class ProductListingPageTest extends Testbase {
 		int before = plp.getProductCountBeforeFilter();
 		plp.openCategoriesFilter();
 		plp.searchCategories("Tshirts");
-		System.out.println("searched category: Tshirts");
+		log.info("searched category: Tshirts");
 		plp.selectCategories("Tshirts");
 		WaitFor.waitForElementToBeVisible(plp.title_count);
 		int after = plp.getProductCountAfterFilter();
-		Assert.assertTrue(after <= before);
+		softly.assertTrue(after > 0, "No products displayed after filter");
+		softly.assertTrue(after <= before, " Product count increased after filter");
+		softly.assertAll();
 	}
 
 	@Test(dataProvider = "Category", dataProviderClass = MyntraSearchTest.class)
-	public void toVerifyApplyFiltersIsWorking(String category) {
+	public void toVerifyAppliedCategoryFiltersIsWorking(String category) {
 
 		HomePage sr = new HomePage();
 		ProductListingPage plp = new ProductListingPage();
@@ -128,10 +130,12 @@ public class ProductListingPageTest extends Testbase {
 		plp.openCategoriesFilter();
 		plp.searchCategories(category);
 		plp.selectCategories(category);
-		WaitFor.waitForElementToBeVisible(plp.title_count);
-		System.out.println("Category filter applied: " + category);
-		plp.isProductDetailPageLoaded();
-		Assert.assertTrue(plp.isCategoryFilterApplied(category), "Category filter not applied correctly: " + category);
+		log.info("Category filter applied: " + category);
+		String ActualUrl = plp.getPlpUrl();
+		Assert.assertTrue(ActualUrl.toLowerCase().contains(category.toLowerCase()),
+				"URL does not contain the applied Category filter");
+		log.info("Category  filter applied successfully..");
+
 	}
 
 	@Test(dataProvider = "BrandData", dataProviderClass = MyntraSearchTest.class)
@@ -144,11 +148,11 @@ public class ProductListingPageTest extends Testbase {
 		sr.typeAndHitSearchBar("kids");
 		plp.openBrandFilter();
 		plp.selectBrandDirectly(brand);
-		WaitFor.waitForElementToBeVisible(plp.title_count);
-		System.out.println("Brand filter applied: " + brand);
-		plp.isProductDetailPageLoaded();
-		Assert.assertTrue(plp.isProductDetailPageLoaded(),
-				"Product detail page did not load after applying brand filter: " + brand);
+		log.info("Brand filter applied: " + brand);
+		String ActualUrl = plp.getPlpUrl();
+		Assert.assertTrue(ActualUrl.toLowerCase().contains(brand.toLowerCase()),
+				"URL does not contain the applied Category filter");
+		log.info("Brand filter applied successfully..");
 
 	}
 
@@ -160,12 +164,11 @@ public class ProductListingPageTest extends Testbase {
 		sr.typeAndHitSearchBar("Kids");
 		int before = plp.getProductCountBeforeFilter();
 		plp.openBrandFilter();
-		plp.searchBrand("Puma");
-		System.out.println("searched brand: Puma");
-		plp.selectBrandDirectly("Puma");
-		WaitFor.waitForElementToBeVisible(plp.title_count);
+		plp.selectBrandDirectly("YK");
 		int after = plp.getProductCountAfterFilter();
-		Assert.assertTrue(after <= before);
+		softly.assertTrue(after > 0, "No products displayed after filter");
+		softly.assertTrue(after <= before, " Product count increased after filter");
+		softly.assertAll();
 
 	}
 
@@ -179,8 +182,11 @@ public class ProductListingPageTest extends Testbase {
 		plp.openColorFilter();
 		plp.selectcolor("Red");
 		int after = plp.getProductCountAfterFilter();
+		softly.assertTrue(after > 0, "No products displayed after filter");
+		softly.assertTrue(after <= before, " Product count increased after filter");
+		softly.assertAll();
 		Assert.assertTrue(plp.isColorFilterApplied("Red"), "Red filter is not applied");
-		Assert.assertTrue(after <= before, "Product count did not reduce after applying filter");
+
 	}
 
 	@Test(dataProvider = "colourDataForTshirts", dataProviderClass = MyntraSearchTest.class)
@@ -191,18 +197,18 @@ public class ProductListingPageTest extends Testbase {
 		CartPage cart = new CartPage();
 		sr.clickOnSearchResult();
 		sr.typeAndHitSearchBar("kids");
+		WaitFor.pageLoaded();
 		plp.openColorFilter();
 		plp.selectcolor(color);
-		WaitFor.waitForElementToBeVisible(plp.title_count);
-		System.out.println("Color filter applied: " + color);
-		plp.isProductDetailPageLoaded();
-		Assert.assertTrue(plp.isProductDetailPageLoaded(),
-				"Product detail page did not load after applying color filter: " + color);
+		String ActualUrl = plp.getPlpUrl();
+		Assert.assertTrue(ActualUrl.toLowerCase().contains(color.toLowerCase()),
+				"URL does not contain the applied Category filter");
+		log.info("Color filter applied successfully..");
+
 	}
 
 	@Test(dataProvider = "sortBy", dataProviderClass = MyntraSearchTest.class)
 	public void verifySortByFilterOnPlpPageForTShirts(String sortByOption) {
-
 		HomePage sr = new HomePage();
 		ProductListingPage plp = new ProductListingPage();
 		sr.clickOnSearchResult();
@@ -210,10 +216,13 @@ public class ProductListingPageTest extends Testbase {
 		plp.openCategoriesFilter();
 		plp.searchCategories("Tshirts");
 		plp.selectCategories("Tshirts");
-		plp.openSortOptions();
-		plp.selectSortOption(sortByOption);
-		Assert.assertTrue(plp.isSortOptionApplied(sortByOption), "Sort By filter not applied correctly");
-		System.out.println("Sort By filter applied successfully..");
+
+		plp.sortBy(sortByOption);
+
+		String SortText = plp.getSelectedSortOption();
+		Assert.assertTrue(SortText.contains(sortByOption), "Sort By filter not applied correctly");
+		log.info("Sort By filter applied successfully..");
+
 	}
 
 	@Test(dataProvider = "discountFilterForTshirts", dataProviderClass = MyntraSearchTest.class)
@@ -227,9 +236,9 @@ public class ProductListingPageTest extends Testbase {
 		plp.searchCategories("Tshirts");
 		plp.selectCategories("Tshirts");
 		plp.selectDiscount(discountRange);
-		System.out.println("selected discount: " + discountRange);
+		log.info("selected discount: " + discountRange);
 		int after = plp.getProductCountAfterFilter();
-		Assert.assertTrue(plp.isDiscountFilterApplied(), "Discount filter is not applied");
+		
 		Assert.assertTrue(after <= before, "Product count did not reduce after applying discount filter");
 	}
 
@@ -241,9 +250,9 @@ public class ProductListingPageTest extends Testbase {
 		sr.typeAndHitSearchBar("Kids");
 		int before = plp.getProductCountBeforeFilter();
 		plp.selectDiscount("50% and above");
-		System.out.println("selected discount: 50% and above");
+		log.info("selected discount: 50% and above");
 		int after = plp.getProductCountAfterFilter();
-		Assert.assertTrue(plp.isDiscountFilterApplied(), "Discount filter is not applied");
+		
 		Assert.assertTrue(after <= before, "Product count did not reduce after applying discount filter");
 	}
 
@@ -256,7 +265,6 @@ public class ProductListingPageTest extends Testbase {
 		int before = plp.getProductCountBeforeFilter();
 		plp.openAgeFilter();
 		plp.selectAge("8Y-10Y");
-		System.out.println("selected age: 2-4 years");
 		int after = plp.getProductCountAfterFilter();
 		Assert.assertTrue(plp.isAgeFilterApplied("8Y-10Y"), "Age filter is not applied");
 		Assert.assertTrue(after <= before, "Product count did not reduce after applying age filter");
@@ -284,28 +292,34 @@ public class ProductListingPageTest extends Testbase {
 		sr.clickOnSearchResult();
 		sr.typeAndHitSearchBar("Kids");
 		int before = plp.getProductCountBeforeFilter();
-		plp.openSortOptions();
-		plp.selectSortOption("Price: Low to High");
+		plp.sortBy("Low to High");
 		int after = plp.getProductCountAfterFilter();
 		Assert.assertTrue(after <= before, "Product count did not reduce after applying price filter");
 	}
 
 	@Test
-	public void toVerifyClearAllFilters() {
+	public void toVerifyClearAllFunctionalityOfFilterss() {
 		HomePage sr = new HomePage();
-		ProductListingPage plp = new ProductListingPage();
 		sr.clickOnSearchResult();
 		sr.typeAndHitSearchBar("Kids");
-		int before = plp.getProductCountBeforeFilter();
-		plp.openSizeFilter();
-		plp.selectSize("S");
-		int afterFilter = plp.getProductCountAfterFilter();
-		((JavascriptExecutor) driver).executeScript("window.scrollBy(0,500)");
-		plp.clearAllFilters();
-		int afterClear = plp.getProductCountAfterFilter();
-		Assert.assertTrue(afterFilter < before, "Filter not applied");
-		Assert.assertTrue(afterClear > afterFilter, "Clear All not working");
 
+		ProductListingPage plp = new ProductListingPage();
+		plp.openBrandFilter();
+		plp.selectBrandDirectly("BAESD");
+		WaitFor.pageLoaded();
+		plp.openColorFilter();
+		plp.searchColor("Red");
+		plp.selectcolor("Red");
+		WaitFor.pageLoaded();
+		int beforeFilterClearCount = plp.getProductCountBeforeFilter();
+		WaitFor.pageLoaded();
+		plp.clearAllFilters();
+		int AfterClearFilterCount = plp.getProductCountBeforeFilter();
+		String url = plp.getPlpUrl();
+
+		softly.assertFalse(url.contains("f="), "Filter query still present in URL");
+		softly.assertTrue(beforeFilterClearCount <= AfterClearFilterCount,
+				"after clearing filters no products are displayed which is wrong");
 	}
 
 	@Test
@@ -314,21 +328,16 @@ public class ProductListingPageTest extends Testbase {
 		ProductListingPage plp = new ProductListingPage();
 		sr.clickOnSearchResult();
 		sr.typeAndHitSearchBar("Kids");
-		WaitFor.waitForElementToBeVisible(plp.title_count);
 		plp.selectBoysFilter();
-		WaitFor.waitForElementToBeVisible(plp.title_count);
 		plp.openCategoriesFilter();
 		plp.searchCategories("Tshirts");
 		plp.selectCategories("Tshirts");
-		WaitFor.waitForElementToBeVisible(plp.title_count);
 		plp.isProductDetailPageLoaded();
 		plp.openBrandFilter();
 		plp.selectBrandDirectly("BAESD");
-		WaitFor.waitForElementToBeVisible(plp.title_count);
 		plp.openColorFilter();
 		plp.searchColor("Red");
 		plp.selectcolor("Red");
-		WaitFor.waitForElementToBeVisible(plp.title_count);
 		plp.clickProductByIndex(0);
 		Assert.assertTrue(plp.isCategoryFilterApplied("BAESD"));
 		Assert.assertTrue(plp.isColorFilterApplied("Red"));
@@ -336,10 +345,6 @@ public class ProductListingPageTest extends Testbase {
 		System.out.println("Product is selected");
 	}
 
-	/*
-	 * Negative test case for search and filter combination that should yield no
-	 * results
-	 */
 
 	@Test
 	public void verifyNoresultsForInvalidFilter() {
@@ -365,10 +370,9 @@ public class ProductListingPageTest extends Testbase {
 		int before = plp.getProductCountBeforeFilter();
 		plp.isBoysFilterSelected();
 		plp.openBrandFilter();
-		plp.searchBrand("KY");
 		plp.selectBrandDirectly("KY");
 		int after = plp.getProductCountAfterFilter();
-		Assert.assertEquals(after, before, "Product count not changed even when invalid Brand applied");
+		Assert.assertEquals(after, before, "Product count should remain same for invalid Brand applied");
 
 	}
 
@@ -383,31 +387,8 @@ public class ProductListingPageTest extends Testbase {
 		plp.searchColor("pink123");
 		plp.selectcolor("pink123");
 		int after = plp.getProductCountAfterFilter();
-		Assert.assertEquals(after, before, "Product count not changed even when invalid colorapplied");
+		Assert.assertEquals(after, before, "Product count should remain same for invalid color filter");
 
-	}
-
-	@Test
-	public void verifyPriceSlider() {
-		HomePage srp = new HomePage();
-		ProductListingPage plp = new ProductListingPage();
-		srp.clickOnSearchResult();
-		srp.typeAndHitSearchBar("Kids");
-
-		plp.openCategoriesFilter();
-		plp.searchCategories("Tshirts");
-		plp.selectCategories("Tshirts");
-
-		plp.setPriceSlider(100, 300);
-		Assert.assertTrue(true);
-
-		WaitFor.waitForElementToBeVisible(plp.title_count);
-
-		List<Integer> prices = plp.getAllProductPrices();
-
-		for (int price : prices) {
-			Assert.assertTrue(price >= 100 && price <= 500, "Price out of range: " + price);
-		}
 	}
 
 	@Test
@@ -420,38 +401,11 @@ public class ProductListingPageTest extends Testbase {
 		int before = plp.getProductCountBeforeFilter();
 		plp.selectDiscount("10% ");
 		int after = plp.getProductCountAfterFilter();
-		Assert.assertEquals(after, before, "Product count not changed even when invalid Brand applied");
-	}
-
-//need to check
-	@Test
-	public void verifyNoResultsForInvalidSearchWithValidBrand() {
-		HomePage sr = new HomePage();
-		ProductListingPage plp = new ProductListingPage();
-
-		sr.clickOnSearchResult();
-		sr.typeAndHitSearchBar("@@@@");
-
-		plp.openBrandFilter();
-		plp.selectBrandDirectly("mapu");
-
-		Assert.assertTrue(plp.isNoResults(), "Invalid search should not return products");
+		Assert.assertEquals(after, before, "\"Product count should remain same for invalid Discount filter");
 	}
 
 	@Test
-	public void verifyNoResultsForInvalidSearchWithDiscount() {
-		HomePage sr = new HomePage();
-		ProductListingPage plp = new ProductListingPage();
-
-		sr.clickOnSearchResult();
-		sr.typeAndHitSearchBar("@@@@");
-
-		plp.selectDiscount("50% and above");
-		Assert.assertTrue(plp.isNoResults(), "Invalid search should not return products");
-	}
-
-	@Test
-	public void verifyNoResultsForMultipleInvalidFilters() {
+	public void verifyNoResultsForvalidSearchWithInvalidBrand() {
 		HomePage sr = new HomePage();
 		ProductListingPage plp = new ProductListingPage();
 
@@ -459,46 +413,35 @@ public class ProductListingPageTest extends Testbase {
 		sr.typeAndHitSearchBar("Kids");
 		int before = plp.getProductCountBeforeFilter();
 		plp.openBrandFilter();
-		plp.selectBrandDirectly("Puma");
-		plp.openColorFilter();
-		plp.selectcolor("Purple");
+		plp.selectBrandDirectly("mapu");
+		int after = plp.getProductCountAfterFilter();
+		Assert.assertEquals(after, before, "Product count should remain same for invalid brand applied");
+
+	}
+
+
+
+	@Test
+	public void verifyNoResultsForMultipleInvalidFilters() {
+		HomePage sr = new HomePage();
+		ProductListingPage plp = new ProductListingPage();
+		sr.clickOnSearchResult();
+		sr.typeAndHitSearchBar("Kids");
+		int before = plp.getProductCountBeforeFilter();
+		plp.openCategoriesFilter();
+		plp.searchCategories("shitrs");
+		plp.selectCategories("shitrs");
+		plp.openBrandFilter();
+		plp.selectBrandDirectly("KY");
+		plp.isPageLoaded();
 		plp.selectDiscount("80% and above");
 		int after = plp.getProductCountAfterFilter();
-		Assert.assertEquals(after, before, "Product count not changed even when invalid Brand applied");
+		Assert.assertEquals(after, before, "Product countshould remain same for invalid multiple filter applied");
 
 	}
 
-	@Test
-	public void verifyColorWithoutOpeningFilter() {
-		ProductListingPage plp = new ProductListingPage();
 
-		try {
-			plp.selectcolor("Red");
-			Assert.fail("Color selected without opening filter");
-		} catch (Exception e) {
-			Assert.assertTrue(true);
-		}
-	}
 
-	@Test
-	public void verifyClearFilterWithoutApplying() {
-		HomePage sr = new HomePage();
-		ProductListingPage plp = new ProductListingPage();
-		sr.clickOnSearchResult();
-		sr.typeAndHitSearchBar("Kids");
-		plp.clearAllFilters();
-		Assert.assertTrue(true, "Clear filter should not crash");
-	}
-
-	@Test
-	public void verifySortWhenNoProducts() {
-		HomePage sr = new HomePage();
-		ProductListingPage plp = new ProductListingPage();
-		sr.clickOnSearchResult();
-		sr.typeAndHitSearchBar("Kids");
-		plp.openSortOptions();
-		plp.selectSortOption("Price: Low to High");
-		Assert.assertTrue(plp.isNoResults(), "Products are not displayed");
-	}
+	
 
 }

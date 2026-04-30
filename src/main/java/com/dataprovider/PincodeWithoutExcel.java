@@ -16,12 +16,12 @@ public class PincodeWithoutExcel {
 	
 	public Object[][] invalidPincodes() {
 	    return new Object[][] {
-	        {"12345"},   // too short
-	        {"1234567"}, // too long
-	        {"ABCDE"},   // non-numeric
-	        {"12A45"},   // mixed characters
-	        {""},        // empty string
-	        {null}       // null value
+	        {"12345"},  
+	        {"1234567"}, 
+	        {"ABCDE"},  
+	        {"12A45"}, 
+	        {""},        
+	        {null}       
 	    };
 	}
 }

@@ -50,20 +50,12 @@ public class MyntraSearchTest {
 			    	    	        {"Backpacks"},
 			    	    	        {"Briefs"},
 			    	    	        {"Blazers"},
-			    	    	        {"Bath Towels"},
-			    	    	        {"Baby Apparel Gift Set"},
-			    	    	        {"Baby Gear & Nursery"},
-			    	    	        {"Baby Utensils"},
-			    	    	        {"Bibs"},
+			                 {"Bibs"},
 			    	    	        {"Belts"},
 			    	    	        {"Boots"},
 			    	    	        {"Bed Covers"},
-			    	    	        {"Baby Carriers"},
-			    	    	        {"Clothing Set"},
-			    	    	        {"Casual Shoes"},
 			    	    	        {"Caps"},
 			    	    	        {"Co-Ords"},
-			    	    	        {"Curtains and Sheers"},
 			    	    	        {"Dungarees"},
 			    	    	        {"Diapers"}
 			    	    	    };
@@ -107,16 +99,7 @@ public class MyntraSearchTest {
 	    	        {"Pink"},
 	    	        {"Charcoal"},
 	    	        {"Olive"},
-	    	        {"Grey Melange"},
-	    	        {"Maroon"},
-	    	        {"Khaki"},
-	    	        {"Sea Green"},
-	    	        {"Yellow"},
-	    	        {"Tan"},
-	    	        {"Purple"},
-	    	        {"Orange"},
-	    	        {"Lavender"},
-	    	        {"Cream"}
+	    	      
 	    	    };
 	    	}
 	   

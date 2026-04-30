@@ -1,4 +1,7 @@
-Feature: Myntra HomePage Functionality
+Feature:Myntra Homepage Functionality
+
+  This feature validates key homepage actions like search,
+  wishlist access, and order navigation for guest users.
 
 Scenario: Verify homePage of Myntra loads
   Given user is on homepage
@@ -29,9 +32,6 @@ Scenario: Verify search with invalid number
   When user searches for "455555555"
   Then no results message should be displayed
 
-
-# ---------------- POSITIVE ----------------
-
 Scenario Outline: Search different products on Myntra
   Given user is on homepage
   When user searches for "<product>"
@@ -56,23 +56,15 @@ Examples:
   | sandals     |
 
 
-# ---------------- AUTOSUGGEST ----------------
-
 Scenario: Verify search suggestions are displayed while typing
   Given user is on homepage
   When user types keyword "Tshirts"
   Then user should see the autosuggestions
 
-
-# ---------------- WISHLIST ----------------
-
 Scenario: Verify wishlist without login
   Given user is on homepage
   When user clicks on wishlist icon
   Then user should be redirected to the login page
-
-
-# ---------------- ORDERS ----------------
 
 Scenario: Verify orders list without login
   Given user is on homepage

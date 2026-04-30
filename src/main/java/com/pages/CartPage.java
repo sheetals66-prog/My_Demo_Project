@@ -1,18 +1,16 @@
 package com.pages;
 
-import java.util.ArrayList;
+import static com.utilities.WaitFor.waitForElementToBeVisible;
+
 import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.testng.annotations.Test;
 
 import com.testbase.KeyWord;
 import com.utilities.WaitFor;
-
-import static com.utilities.WaitFor.*;
 
 public class CartPage {
 
@@ -64,7 +62,7 @@ public class CartPage {
 	WebElement brandName;
 	@FindBy(css = "a.itemContainer-base-itemLink")
 	WebElement productName;
-	@FindBy(xpath = "//div[@class='priceDetail-base-total']")
+	@FindBy(xpath = "//div[@class=\"priceDetail-base-total \"]")
 	WebElement productPrice;
 	@FindBy(css = "div.itemComponents-base-size")
 	WebElement productSize;
@@ -74,7 +72,7 @@ public class CartPage {
 	WebElement checkoutPageTitle;
 	@FindBy(xpath = "//div[text()=\"ADD GIFT PACKAGE\"]")
 	WebElement addGiftPackage;
-	@FindBy(xpath = "//div[@id='cartItemsList']//div[@class='item-base-item']")
+	@FindBy(xpath = "//div[@class=\"itemContainer-base-item  \"]")
 	List<WebElement> productcards;
 	@FindBy(css = "div.itemContainer-base-itemLeft")
 	List<WebElement> productImages;
@@ -181,6 +179,8 @@ public class CartPage {
 	public void clickCancelButton() {
 		waitForElementToBeVisible(cancelButton);
 		cancelButton.click();
+		KeyWord.waitForSeconds(2000);
+		
 	}
 
 	public boolean isPlaceOrderButtonDisplayed() {
@@ -209,7 +209,7 @@ public class CartPage {
 
 	}
 	
-	//Product details methods
+
 
 	public boolean isProductPresent() {
 		return !productcards.isEmpty();
@@ -240,7 +240,7 @@ public class CartPage {
 	}
 
 	public void increaseQuantity() {
-		// TODO Auto-generated method stub
+	
 		return;
 	}
 
@@ -251,14 +251,10 @@ public class CartPage {
 	}
 	
 	public void waitForProductSelectCheckbox() {
-		try {
-			waitForElementToBeVisible(productSelectCheckbox);
-		} catch (Exception e) {
-			// ignore
-		}
+		WaitFor.waitForElementToBeVisible(productSelectCheckbox);
 	}
 
-	// New helper methods used by tests
+
 	public boolean isRemoveButtonVisible() {
 		try {
 			return removeButton.isDisplayed();
@@ -273,7 +269,7 @@ public class CartPage {
 			couponInput.clear();
 			couponInput.sendKeys(code);
 		} catch (Exception e) {
-			// ignore if not present
+		
 		}
 	}
 
@@ -305,7 +301,7 @@ public class CartPage {
 	}
 
 	public void increaseQuantityToMaxLimit() {
-		// try to click increase button repeatedly until a warning appears or until a safe cap
+		
 		try {
 			List<WebElement> incButtons = KeyWord.driver.findElements(By.xpath("//button[contains(@aria-label,'increase') or contains(@class,'qty-increase') or contains(.,'+')]") );
 			if (incButtons.isEmpty()) return;
@@ -316,7 +312,7 @@ public class CartPage {
 				if (isMaxQuantityWarningDisplayed()) break;
 			}
 		} catch (Exception e) {
-			// ignore
+		
 		}
 	}
 
@@ -331,7 +327,6 @@ public class CartPage {
 
 	public boolean isLoginPopupDisplayed() {
 		try {
-			// Check for a login form or popup
 			List<WebElement> loginElements = KeyWord.driver.findElements(By.xpath("//form//input[@type='email' or @name='email' or @placeholder='Email'] | //h2[contains(.,'Login')]"));
 			return loginElements.size() > 0;
 		} catch (Exception e) {
@@ -347,5 +342,4 @@ public class CartPage {
 			return false;
 		}
 	}
-
 }
