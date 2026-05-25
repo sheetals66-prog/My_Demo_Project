@@ -203,7 +203,7 @@ public class ProductDetailsTest extends Testbase {
 					"Pincode message not displayed properly: " + msg);
 
 		} catch (Exception e) {
-			// TODO: handle exception
+			
 		}
 
 		Assert.assertTrue(pd.isGoToBagDisplayed(), "product is added to bag by selecting size");

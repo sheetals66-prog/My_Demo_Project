@@ -10,7 +10,7 @@ import com.pages.HomePage;
 import com.pages.ProductDetailPage;
 import com.pages.ProductListingPage;
 import com.testbase.KeyWord;
-import com.testbase.Keyword;
+import com.testbase.KeyWord;
 import com.testbase.Testbase;
 import com.utilities.WaitFor;
 

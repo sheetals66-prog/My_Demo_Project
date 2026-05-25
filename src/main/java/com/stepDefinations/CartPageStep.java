@@ -38,15 +38,16 @@ public class CartPageStep {
 	public void userAddsProductToBagAndNavigatesToCartPage() {
 
 		try {
-			pdp.selectSize(0); 
+			pdp.selectSize(0);
 		} catch (Exception e) {
 			System.out.println("Size not available, skipping...");
 		}
-
+		WaitFor.pageLoaded();
 		pdp.clickAddToBag();
+		WaitFor.pageLoaded();
 		pdp.clickGoToBag();
 		Assert.assertTrue(pdp.isGoToBagDisplayed(), "Go To Bag button not visible");
-		
+
 	}
 
 	@Then("User should see Place Order button")
@@ -135,15 +136,16 @@ public class CartPageStep {
 		ProductDetailPage pd = new ProductDetailPage();
 		Assert.assertTrue(pd.isErrormsgdisplayed());
 	}
+
 	@When("User enters invalid coupon {string}")
 	public void userEntersInvalidCoupon(String code) {
-	    cart.clickCouponButton();
-	    cart.enterCoupon(code);
-	    cart.clickApplyCouponButton();
+		cart.clickCouponButton();
+		cart.enterCoupon(code);
+		cart.clickApplyCouponButton();
 	}
 
 	@Then("Error message should be shown")
 	public void errorMessageShouldBeShown() {
-	    Assert.assertTrue(cart.isCouponErrorDisplayed());
+		Assert.assertTrue(cart.isCouponErrorDisplayed());
 	}
 }
